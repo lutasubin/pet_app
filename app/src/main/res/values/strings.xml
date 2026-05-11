@@ -1,3 +1,13 @@
 <resources>
     <string name="app_name">app_pet</string>
+    <string name="pet_test_title">Pet (thu trong app)</string>
+    <string name="pet_test_overlay_hint">Pet noi toan man hinh: bat quyen hien thi tren ung dung khac + thong bao, roi nhan Bat pet noi man hinh. Keo tha tren hinh pet; cham ngoai pet se xuyen xuong app duoi.</string>
+    <string name="pet_sprite_content_desc">Nhan vat pet</string>
+    <string name="pet_overlay_channel_name">Pet noi man hinh</string>
+    <string name="pet_overlay_notification_title">Pet dang chay noi</string>
+    <string name="pet_overlay_notification_body">Cham de tat hoac mo lai app.</string>
+    <string name="pet_overlay_start">Bat pet noi man hinh</string>
+    <string name="pet_overlay_stop">Tat pet noi</string>
+    <string name="pet_overlay_grant_overlay">Mo cai dat quyen noi</string>
+    <string name="pet_overlay_running_in_overlay">Pet dang chay tren toan man hinh (tat o thong bao hoac nut ben duoi).</string>
 </resources>

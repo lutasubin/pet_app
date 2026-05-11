@@ -1,0 +1,48 @@
+---
+alwaysApply: true
+---
+# Sprite Animation - Quy tac
+
+## Khai niem
+- **Frame** = 1 anh (`shime1.png`..`shime46.png`).
+- **Clip** = chuoi frame + `defaultFrameMs` + `loop` (`PetFrameClip`).
+- **Catalog** = `ShimejiFrameCatalog` (SSOT thu tu frame, KHONG hardcode noi khac).
+- **Anchor** = `PetSpriteAnchor` (64,128) — toa do "chan pet" trong sprite 128x128.
+
+## Cache bat buoc
+KHONG goi `BitmapFactory.decodeStream` truc tiep trong Composable moi frame -> nhay/giật.
+- Dung `PetSpriteCache.load(context, path)` (ConcurrentHashMap path -> ImageBitmap).
+- Goi `PetSpritePrefetcher()` o top-level cua moi man (PetPlayField, PetOverlayContent) de prefetch 46 frame tren `Dispatchers.IO`.
+- Khi doi path, GIU bitmap cu cho den khi load xong (KHONG vẽ Box xam placeholder).
+
+## Kich thuoc hien thi
+Sprite engine dung **pixel logical**. Vẽ Image phai khop:
+
+```kotlin
+// BAD: 128.dp -> 384px o may 3x, pet to gap 3 lan
+modifier = Modifier.size(SPRITE_WIDTH_PX.dp)
+
+// GOOD: dung 128 px logical
+val w = with(density) { SPRITE_WIDTH_PX.toDp() }
+modifier = Modifier.size(w)
+```
+
+## FPS / tick
+- Tick engine = 16ms (~60 fps) cho ca Activity va Service.
+- `PetFrameClip.defaultFrameMs` LA SO TICK SHIMEJI-EE (giong actions.xml goc), KHONG phai ms.
+- `PetClipPlayback.SHIMEJI_TICK_MS = 20` -> ms thuc te = `defaultFrameMs * 20`.
+  Vi du `Walk` defaultFrameMs=6 -> 120ms / frame ≈ 8 fps, du de mat thay tung buoc chan.
+- KHONG sua thang gia tri trong `ShimejiFrameCatalog` cho dep mat; can chinh cam nhan toc do
+  thi dieu chinh `SHIMEJI_TICK_MS` (giu nguyen catalog Shimeji goc).
+
+## Huong nhin (lookRight)
+Sprite Shimeji goc huong PHAI. Khi `snapshot.lookRight = false` PHAI flip ngang:
+```kotlin
+PetShimeSprite(path, flipHorizontal = !snap.lookRight)
+```
+Implement bang `Modifier.graphicsLayer { scaleX = if (flip) -1f else 1f }` trong `PetShimeSprite`.
+
+## Khi them clip moi
+1. Khai bao `ShimejiClipId` moi.
+2. Them entry trong `ShimejiFrameCatalog.clips`.
+3. Engine chuyen sang clip do qua `s.copy(clipId = ...)`, KHONG hardcode path.

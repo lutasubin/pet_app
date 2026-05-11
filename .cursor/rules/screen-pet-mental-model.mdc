@@ -1,0 +1,41 @@
+---
+description: Mental model va roadmap toan he Screen Pet (overlay + sprite engine + state machine)
+alwaysApply: true
+---
+
+# Screen Pet - Mental model bat buoc nho
+
+App nay KHONG phai CRUD; no la **mini game engine + Android overlay**.
+Moi tinh nang phai dat dung lop trong stack sau:
+
+```
+Overlay Service (Foreground + WindowManager TYPE_APPLICATION_OVERLAY)
+        |
+PetOverlayWindowHost (window kich thuoc sprite, di chuyen theo anchor)
+        |
+PetOverlayContent / PetPlayField (Compose UI: PetShimeSprite + drag)
+        |
+PetViewModel / PetOverlayPlaySink (presentation)
+        |
+TickPetUseCase / DispatchPetInputUseCase / UpdatePlayAreaUseCase (domain)
+        |
+PetEngine (FSM + physics) <- PetSimulationRepository (SSOT StateFlow)
+```
+
+Quy tac vang:
+- **SSOT**: `PetSimulationRepository.world: StateFlow<PetWorldState>`. Activity va Service deu doc cung 1 instance (Hilt @Singleton).
+- **Tick**: chi 1 nguon tick tai 1 thoi diem. Khi overlay bat -> `PetOverlaySession.active = true` -> `PetViewModel` huy tick, Service chiem; nguoc lai khi tat.
+- **Mutex**: moi `tickPetUseCase` / `dispatchPetInputUseCase` phai qua `PetSimulationUpdateMutex` de tranh race giua Activity va Service.
+- **Don vi**: anchor/velocity tinh bang **pixel logical cua engine** (khong phai dp). UI vẽ sprite size = `with(density){SPRITE_WIDTH_PX.toDp()}`.
+
+Roadmap on lai khi them tinh nang moi:
+1. Pet noi (Service + WindowManager).
+2. Sprite animation (frame + cache).
+3. Movement (velocity + delta).
+4. Drag (cumulative dragAmount, tranh race window di chuyen).
+5. State machine (PetRuntimePhase).
+6. Random behavior / AI.
+7. Physics (gravity, bouncing, edge).
+
+Tu khoa search khi bi: `android overlay kotlin`, `WindowManager TYPE_APPLICATION_OVERLAY`,
+`compose ComposeView in service`, `sprite animation kotlin`, `game loop coroutine`, `finite state machine kotlin`.

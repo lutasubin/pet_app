@@ -1,0 +1,35 @@
+---
+alwaysApply: true
+---
+# Game Loop + FSM + Physics - Quy tac
+
+## Game loop
+- Chi 1 nguon tick / thoi diem (Activity HOAC Service, dieu phoi qua `PetOverlaySession.active`).
+- Tick rate: `delay(16)` trong `viewModelScope` / Service scope.
+- Moi tick goi `tickPetUseCase(16L)` -> `PetEngine.advance(world, PetInput.Tick(dt))`.
+- Use case PHAI lock qua `PetSimulationUpdateMutex` truoc khi `repository.replace`.
+
+## FSM - PetRuntimePhase
+States (KHONG them state moi neu khong cap nhat ca engine + transitions):
+`GroundIdle`, `GroundMoving`, `Airborne`, `Bouncing`, `Dragged`, `WallLeft`, `WallRight`, `Ceiling`.
+
+Quy tac chuyen state:
+- Drag start -> `Dragged` (velocity = 0, dragGrabOffset = anchor - pointer).
+- Drag end -> `Airborne` (velocity = release velocity, clip = Falling).
+- `Airborne` cham san -> `Bouncing` (BOUNCE_PHASE_MS).
+- `Bouncing` het thoi gian -> `GroundIdle` hoac `GroundMoving`.
+- Trong `Dragged`: engine return som; chi advance clip frame, KHONG ap physics.
+
+## Physics
+- `GRAVITY_PX_PER_SEC2 = 2400`, `WALK_SPEED_PX_PER_SEC = 120`. Don vi: pixel logical / giay.
+- `dt = dtMs / 1000f`. Velocity Verlet don gian: `v += a*dt; pos += v*dt`.
+- Sau moi tick: `clampAnchor` -> `computeContact` (4 canh) -> co the chuyen state.
+
+## Pure / testable
+- `PetEngine`, `PetEnginePhysics`, `PetEngineAirPhysics`, `PetEngineWallPhysics`, `PetClipPlayback`,
+`PetBoundsGeometry` PHAI thuan tuy (khong context Android, khong I/O) -> unit test JUnit thuong.
+- Moi behavior moi cua engine: them test trong `app/src/test/.../engine/` hoac `usecase/`.
+
+## Default world
+`PetWorldDefaults.initial(area)` mac dinh phase = `GroundMoving`, clip = `Walk` de pet di ngay khi mo app
+(neu doi sang `GroundIdle`, NHO pet se dung im vi `Stand` clip chi co 1 frame).

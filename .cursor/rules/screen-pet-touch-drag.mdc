@@ -1,0 +1,51 @@
+---
+alwaysApply: true
+---
+# Touch & Drag - Quy tac
+
+## Vi sao KHONG dung pointer absolute
+Trong overlay, window di chuyen theo `anchor` moi tick. Neu gui pointer absolute
+(`anchor - sprite_anchor + change.position`) thi:
+- Window LayoutParams.x/y cap nhat **async** -> luc event toi co the dung gia tri cu.
+- Engine ap `dragGrabOffset` HAI lan -> pet nhay xa hoac mat gesture.
+
+## Pattern bat buoc: cumulative dragAmount + rememberUpdatedState
+
+```kotlin
+val snapState = rememberUpdatedState(snap)
+Modifier.pointerInput(Unit) {
+    var startX = 0f; var startY = 0f
+    var totalDx = 0f; var totalDy = 0f
+    detectDragGestures(
+        onDragStart = {
+            startX = snapState.value.anchorXPx
+            startY = snapState.value.anchorYPx
+            totalDx = 0f; totalDy = 0f
+            eventSink.onPointerDown(startX, startY) // = anchor -> hit test pass + dragOffset = 0
+        },
+        onDrag = { change, dragAmount ->
+            change.consume()
+            totalDx += dragAmount.x
+            totalDy += dragAmount.y
+            eventSink.onPointerMove(startX + totalDx, startY + totalDy)
+        },
+        onDragEnd = { eventSink.onPointerUp() },
+        onDragCancel = { eventSink.onPointerUp() },
+    )
+}
+```
+
+Ly do:
+- `onDragStart` gui DUNG anchor -> `hitTestPointer` luon pass, `dragGrabOffset = 0`
+  -> ngon tay luon nam tam window khi window dich theo, **khong rot gesture**.
+- `dragAmount` la **delta tu lan truoc** (Compose) -> tich luy thanh `totalDx/Dy` de tao position cumulative.
+- `rememberUpdatedState` giup lambda doc snapshot moi nhat ma KHONG restart pointerInput (giu gesture xuyen suot).
+
+## Anti-pattern (cam)
+- `pointerInput(snap)` -> snapshot doi moi tick -> gesture restart -> drag bi cancel.
+- Goi truc tiep `repository.world.value` trong lambda (presentation khong duoc cham repository).
+- Dung MotionEvent listener thay cho Compose (lop nay phai Compose-only).
+
+## Khi them gesture moi (tap, long press, fling)
+- Van qua `PetPlayEventSink` -> `DispatchPetInputUseCase` -> `PetEngine`.
+- KHONG xu ly business logic (vi du "tap thi happy") trong Composable.

@@ -1,0 +1,39 @@
+---
+alwaysApply: true
+---
+# Overlay Window - Quy tac bat buoc
+
+## Quyen / Manifest
+- `SYSTEM_ALERT_WINDOW`, `FOREGROUND_SERVICE`, `FOREGROUND_SERVICE_SPECIAL_USE`, `POST_NOTIFICATIONS`.
+- Service khai bao `android:foregroundServiceType="specialUse"` + `<property android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE" .../>`.
+- Truoc khi `addView`: kiem tra `Settings.canDrawOverlays(context)`; neu khong -> mo `ACTION_MANAGE_OVERLAY_PERMISSION` chu KHONG silently fail.
+
+## ComposeView trong Service
+ComposeView cần **3 owner** thi moi vẽ:
+- `setViewTreeLifecycleOwner(owner)`
+- `setViewTreeViewModelStoreOwner(owner)`
+- `setViewTreeSavedStateRegistryOwner(owner)`
+
+Thu tu lifecycle bat buoc (SAI thu tu se crash `consumeRestoredStateForKey` truoc CREATED):
+1. `savedStateController.performAttach()`
+2. `savedStateController.performRestore(null)` (PHAI truoc ON_CREATE!)
+3. `handleLifecycleEvent(ON_CREATE)`
+4. set 3 view-tree owner -> `setContent { ... }`
+5. `windowManager.addView(view, params)`
+6. `handleLifecycleEvent(ON_START)` + `handleLifecycleEvent(ON_RESUME)`
+
+Ly do: `Recreator` observer (attach trong `performAttach`) se goi `consumeRestoredStateForKey`
+ngay tai ON_CREATE event. Neu chua `performRestore` thi throw `IllegalStateException`.
+
+Khi `detach`: `removeView` -> `disposeComposition` -> `ON_PAUSE/STOP/DESTROY` -> `viewModelStore.clear()`.
+
+## Window kich thuoc = sprite (touch pass-through)
+- `LayoutParams(SPRITE_WIDTH_PX, SPRITE_HEIGHT_PX, TYPE_APPLICATION_OVERLAY, FLAGS, TRANSLUCENT)`.
+- `gravity = TOP or START`, di chuyen bang `updateViewLayout` voi `params.x = anchorX - ANCHOR_X`, `params.y = anchorY - ANCHOR_Y`.
+- `FLAGS = FLAG_LAYOUT_IN_SCREEN or FLAG_NOT_FOCUSABLE or FLAG_NOT_TOUCH_MODAL or FLAG_HARDWARE_ACCELERATED`.
+- KHONG dung `MATCH_PARENT` cho overlay (chan touch toan man).
+- Sync position chay tren `Dispatchers.Main.immediate`; `try/catch` + `Log.e("PetOverlay", ...)` quanh `addView/updateViewLayout`.
+
+## Play area cho engine
+Goi `updatePlayAreaUseCase(PetPlayArea(w, h))` voi `w/h = wm.currentWindowMetrics.bounds.width()/height()`
+NGAY truoc khi attach window, de pet biet bo tuong = mep man hinh that.
