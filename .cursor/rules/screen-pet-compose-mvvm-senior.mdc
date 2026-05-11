@@ -1,0 +1,106 @@
+---
+alwaysApply: true
+---
+# Screen Pet - Senior Cursor Rules
+
+## Muc tieu du an
+- Android only, Kotlin, Jetpack Compose, Material 3.
+- Ung dung **pet / animation tren man hinh** (Screen Pet): hien thi va tuong tac voi nhan vat pet trong app; mo rong overlay he thong chi khi da thiet ke ro va tach tang.
+- Kien truc bat buoc: MVVM + Clean Architecture + feature-based.
+- San sang release Google Play (AAB).
+
+## Cau truc bat buoc
+- `app/core`: constants (bao gom duong dan asset pet/animation), utils, theme, navigation, di.
+- `app/feature/...`: tach `presentation`, `domain`, `data` theo tung feature (vi du `pet`, `home`, `settings` — dat ten theo roadmap, khong tron layer).
+- Khong duoc tron layer.
+
+## Luong nghiep vu bat buoc
+- `UI -> ViewModel -> UseCase -> Repository -> DataSource`
+
+## Cam tuyet doi
+- Khong viet business logic trong Composable.
+- Khong goi API/database truc tiep tu UI.
+- Khong de ViewModel phu thuoc `Context`.
+- Khong bo qua ranh gioi MVVM/Clean Architecture.
+- Khong tu code khi chua ro yeu cau (mo ho).
+- Cai gi chua biet co the search hoi lai user.
+
+## Quy tac Compose
+- Dung Compose only, khong XML screen.
+- State hoist, UI uu tien stateless.
+- State den tu ViewModel (StateFlow uu tien).
+- Toan bo ui state phai immutable.
+
+## Quy tac Animation / Pet UI
+- Duong dan asset (Lottie, WebP, anh sprite, sound) phai qua constant trong `app/core/constants`, khong hardcode chuoi path trong Composable.
+- Giam tai main thread: decode/giai nen nang o tang data hoac background phu hop; tranh logic nang trong `LaunchedEffect`/composition vo han.
+- Trang thai animation (idle, tap, feed, ...) do ViewModel/UseCase dieu phoi; UI chi nhan state va trigger event.
+- Neu dung **overlay / cua so he thong**: tach `Service` hoac tang rieng, khong tron truc tiep vao man hinh Composable thuan; xu ly quyen va lifecycle ro rang.
+
+## Quy tac DI + Data
+- DI dung Hilt, khong tao singleton thu cong.
+- Repository la single source of truth.
+- **DataStore** uu tien cho: cai dat nhe, trang thai pet (ten, skin da mo), flag onboarding.
+- **Room / SQLite** chi khi can lich su / truy van phuc tap (vi du nhat ky cham soc, thong ke theo ngay); khong bat buoc moi thu deu vao SQLite.
+
+## Quy tac luu tru (khi co)
+- Moi thao tac doc/ghi DB phai di qua `Repository -> DataSource`.
+- Can co migration khi thay doi schema Room, tranh mat du lieu nguoi dung.
+
+## Quy tac code
+- Code phai sach, de doc, de test, va tuan thu day du nguyen ly SOLID.
+- Ten bien/ham ro nghia, SRP, tranh duplicate.
+- Comment chi khi logic phuc tap.
+- Comment code bat buoc bang tieng Viet.
+- Moi file khong duoc vuot qua 100 dong (uu tien tach nho theo trach nhiem).
+- Moi function nen nho gon, mot trach nhiem ro rang.
+
+## Quy tac MVVM + DI bat buoc
+- Bat buoc ap dung dung mo hinh MVVM cho toan bo feature.
+- UI layer chi render state va gui event, khong chua business logic.
+- ViewModel chi lam viec voi UseCase/Repository, khong truy cap datasource truc tiep.
+- Dependency Injection bat buoc dung Hilt, khong khoi tao thu cong trong code nghiep vu.
+
+## Quy tac ngon ngu
+- Assistant tra loi bang tieng Viet.
+- Giai thich tai lieu tieng Anh bang tieng Viet.
+
+## Quy tac UI / theme
+- Mau / chu / kich thuoc dua vao token `app/core/theme`.
+- Khong hardcode string / mau / dimens trong screen (dung string resource hoac token).
+
+## Quy tac release
+- Build debug/release phai xanh truoc khi chot.
+- Khong de debug log rac trong ban release.
+- Uu tien thay doi nho, an toan, de test.
+
+## Error Handling
+- Tat ca data tra ve phai wrap trong Result (Success/Error) o tang domain/data phu hop.
+- UI phai co state: Loading / Success / Error khi can.
+- Khong throw exception truc tiep len UI.
+- Loi phai duoc xu ly tai ViewModel.
+
+## UI State
+- Moi screen chi co 1 UiState duy nhat.
+- State phai immutable.
+- Khong dung nhieu StateFlow le cho cung mot man.
+
+## Testing
+- UseCase bat buoc co unit test.
+- ViewModel phai test StateFlow.
+- Repository co the dung fake data de test.
+
+## Monetization
+- Logic quang cao phai tach rieng (khong viet truc tiep trong UI).
+- Khong lam gian doan trai nghiem nguoi dung.
+- Ads chi hien thi o thoi diem hop ly (sau action, khong spam).
+
+## Navigation
+- Navigation chi duoc goi tu UI layer.
+- Khong navigate trong ViewModel.
+- Route duoc dinh nghia trong `core/navigation`.
+- Uu tien don gian, ship nhanh, khong over-engineering.
+
+## Skill Android
+- `.cursor/skill_androi`: dung skill Android de hoc va viet code, tham khao tranh loi vat.
+- Kotlin / Compose viet theo muc senior (5–10 nam kinh nghiem): ro rang, bao tri tot.
