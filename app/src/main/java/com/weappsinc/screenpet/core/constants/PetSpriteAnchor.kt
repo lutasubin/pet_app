@@ -9,6 +9,6 @@ object PetSpriteAnchor {
     const val ANCHOR_X_IN_SPRITE: Int = 64
     const val ANCHOR_Y_IN_SPRITE: Int = 128
 
-    /** Phong to pet trong overlay cho de thay tren toan man hinh that. */
-    const val OVERLAY_DISPLAY_SCALE: Int = 2
+    /** 1 = cung kich thuoc logical (128px) voi trong app; tang neu can pet to hon tren overlay. */
+    const val OVERLAY_DISPLAY_SCALE: Int = 1
 }

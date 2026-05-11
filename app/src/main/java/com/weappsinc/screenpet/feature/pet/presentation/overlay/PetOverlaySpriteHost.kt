@@ -1,6 +1,5 @@
 package com.weappsinc.screenpet.feature.pet.presentation.overlay
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.size
@@ -8,7 +7,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalDensity
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -39,7 +37,6 @@ fun PetOverlaySpriteHost(
         Box(
             modifier = Modifier
                 .size(sizeDp, sizeDp)
-                .background(Color(0x22FF0000))
                 .pointerInput(Unit) {
                     var startX = 0f
                     var startY = 0f
@@ -67,7 +64,7 @@ fun PetOverlaySpriteHost(
             PetShimeSprite(
                 assetRelativePath = path,
                 flipHorizontal = !world.snapshot.lookRight,
-                sizePxOverride = sizePx,
+                sizePxOverride = sizePx.takeIf { it != PetSpriteAnchor.SPRITE_WIDTH_PX },
             )
         }
     }
