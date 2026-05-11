@@ -1,5 +1,33 @@
 <resources>
     <string name="app_name">app_pet</string>
+    <string name="splash_title">Shimeji live</string>
+    <string name="splash_background_content_desc">Nen splash</string>
+    <string name="splash_icon_content_desc">Bieu tuong splash</string>
+
+    <string name="home_tab_home">Home</string>
+    <string name="home_tab_shop">Shop</string>
+    <string name="home_tab_setting">Setting</string>
+    <string name="home_title">Shimeji live</string>
+    <string name="home_activate_title">Kich hoat Shimeji</string>
+    <string name="home_activate_subtitle">Bat tinh nang de trai nghiem</string>
+    <string name="home_swarm_title">Pet Swarm mode</string>
+    <string name="home_banner_content_desc">Banner Shimeji</string>
+    <string name="home_mix_title">Mix Shimeji</string>
+    <string name="home_one_at_random">One at radom</string>
+    <string name="home_unlock">Unlock</string>
+    <string name="home_add_shimeji_cd">Them Shimeji</string>
+    <string name="home_lock_cd">Bi khoa</string>
+    <string name="home_thumbnail_cd">Thumbnail Shimeji</string>
+    <string name="home_picker_title">Chon Shimeji</string>
+    <string name="home_picker_close">Dong</string>
+
+    <string name="shop_placeholder">Shop sap ra mat</string>
+    <string name="shop_search_hint">Search Pet...</string>
+    <string name="shop_download">Download</string>
+    <string name="shop_selected">Select</string>
+    <string name="shop_downloading">Downloading...(%1$d%%)</string>
+    <string name="setting_placeholder">Cai dat</string>
+    <string name="setting_open_dev_menu">Dev menu (PetTestScreen)</string>
     <string name="pet_test_title">Pet (thu trong app)</string>
     <string name="pet_test_overlay_hint">Pet noi toan man hinh: bat quyen hien thi tren ung dung khac + thong bao, roi nhan Bat pet noi man hinh. Keo tha tren hinh pet; cham ngoai pet se xuyen xuong app duoi.</string>
     <string name="pet_sprite_content_desc">Nhan vat pet</string>

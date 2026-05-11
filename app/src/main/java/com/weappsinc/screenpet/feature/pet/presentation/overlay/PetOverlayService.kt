@@ -10,11 +10,11 @@ import android.view.WindowManager
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import com.weappsinc.screenpet.core.constants.PetOverlayContract
-import com.weappsinc.screenpet.feature.pet.domain.repository.PetSimulationRepository
-import com.weappsinc.screenpet.feature.pet.domain.sync.PetSimulationUpdateMutex
-import com.weappsinc.screenpet.feature.pet.domain.usecase.DispatchPetInputUseCase
-import com.weappsinc.screenpet.feature.pet.domain.usecase.TickPetUseCase
-import com.weappsinc.screenpet.feature.pet.domain.usecase.UpdatePlayAreaUseCase
+import com.weappsinc.screenpet.feature.pet.domain.model.PetPlayArea
+import com.weappsinc.screenpet.feature.pet.domain.repository.PetArenaRepository
+import com.weappsinc.screenpet.feature.pet.domain.usecase.DispatchArenaInputUseCase
+import com.weappsinc.screenpet.feature.pet.domain.usecase.TickArenaUseCase
+import com.weappsinc.screenpet.feature.pet.domain.usecase.UpdateArenaPlayAreaUseCase
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 import kotlinx.coroutines.CoroutineScope
@@ -23,24 +23,25 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 
-/** Foreground service: pet TYPE_APPLICATION_OVERLAY, tick khi overlay chiem quyen. */
+/** Foreground service: ve toan bo pet trong [PetArenaRepository] (swarm-ready). */
 @AndroidEntryPoint
 class PetOverlayService : Service() {
 
-    @Inject lateinit var repository: PetSimulationRepository
-    @Inject lateinit var tickPetUseCase: TickPetUseCase
-    @Inject lateinit var updatePlayAreaUseCase: UpdatePlayAreaUseCase
-    @Inject lateinit var dispatchPetInputUseCase: DispatchPetInputUseCase
+    @Inject lateinit var repository: PetArenaRepository
+    @Inject lateinit var tickArenaUseCase: TickArenaUseCase
+    @Inject lateinit var updateArenaPlayAreaUseCase: UpdateArenaPlayAreaUseCase
+    @Inject lateinit var dispatchArenaInputUseCase: DispatchArenaInputUseCase
     @Inject lateinit var overlaySession: PetOverlaySession
-    @Inject lateinit var writeMutex: PetSimulationUpdateMutex
 
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate)
     private var tickJob: Job? = null
-    private var windowHost: PetOverlayWindowHost? = null
-    private var positionSync: PetOverlayPositionSync? = null
+    private var manager: PetArenaOverlayHostManager? = null
 
     override fun onCreate() {
         super.onCreate()
@@ -52,24 +53,36 @@ class PetOverlayService : Service() {
             stopSelf()
             return
         }
-        val w = screenWidthPx()
-        val h = screenHeightPx()
-        Log.i(TAG, "screen=${w}x${h}")
         overlaySession.setActive(true)
-        val sink = PetOverlayPlaySink(scope, updatePlayAreaUseCase, dispatchPetInputUseCase)
-        sink.onPlayAreaSized(w, h)
-        PetOverlaySpawnHelper.spawnAtCenter(scope, repository, writeMutex, w, h)
-        val host = PetOverlayWindowHost(this, repository, sink).also { it.attach() }
-        windowHost = host
-        positionSync = PetOverlayPositionSync(scope, repository, host).also { it.start() }
+        scope.launch { updateArenaPlayAreaUseCase(PetPlayArea(screenWidthPx(), screenHeightPx())) }
+        manager = PetArenaOverlayHostManager(
+            service = this,
+            scope = scope,
+            repository = repository,
+            updateArenaPlayAreaUseCase = updateArenaPlayAreaUseCase,
+            dispatchArenaInputUseCase = dispatchArenaInputUseCase,
+        )
+        observeArenaPets()
+        startTickLoop()
+        toast("Pet noi: bat")
+    }
+
+    private fun observeArenaPets() {
+        scope.launch {
+            repository.arena
+                .map { it.pets.keys.toSet() }
+                .distinctUntilChanged()
+                .collectLatest { manager?.sync(it) }
+        }
+    }
+
+    private fun startTickLoop() {
         tickJob = scope.launch {
             while (isActive) {
                 delay(TICK_MS)
-                tickPetUseCase(TICK_MS)
+                tickArenaUseCase(TICK_MS)
             }
         }
-        toast("Pet noi: bat")
-        Log.i(TAG, "init done")
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
@@ -83,10 +96,8 @@ class PetOverlayService : Service() {
     override fun onDestroy() {
         Log.i(TAG, "onDestroy")
         tickJob?.cancel()
-        positionSync?.stop()
-        positionSync = null
-        windowHost?.detach()
-        windowHost = null
+        manager?.detachAll()
+        manager = null
         scope.cancel()
         overlaySession.setActive(false)
         super.onDestroy()

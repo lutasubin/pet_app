@@ -37,3 +37,9 @@ Khi `detach`: `removeView` -> `disposeComposition` -> `ON_PAUSE/STOP/DESTROY` ->
 ## Play area cho engine
 Goi `updatePlayAreaUseCase(PetPlayArea(w, h))` voi `w/h = wm.currentWindowMetrics.bounds.width()/height()`
 NGAY truoc khi attach window, de pet biet bo tuong = mep man hinh that.
+
+## Multi-window (Pet Swarm)
+- SSOT cho swarm: `PetArenaRepository.arena: StateFlow<PetArenaState>`.
+- Moi `PetId` = **1 ComposeView + 1 LayoutParams + 1 PositionSync** rieng (KHONG goi `setContent` 2 lan tren cung view).
+- `PetArenaOverlayHostManager.sync(activeIds)` xu ly diff: them PetId moi -> `attach`; mat PetId -> `detach` + `disposeComposition` + `owner.moveToDestroyed()`.
+- Tick chay 1 lan / chu ky cho ca arena (`TickArenaUseCase`); KHONG tick song song moi pet.

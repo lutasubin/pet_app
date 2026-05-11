@@ -1,6 +1,8 @@
 package com.weappsinc.screenpet.feature.pet.di
 
+import com.weappsinc.screenpet.feature.pet.data.PetArenaRepositoryImpl
 import com.weappsinc.screenpet.feature.pet.data.PetSimulationRepositoryImpl
+import com.weappsinc.screenpet.feature.pet.domain.repository.PetArenaRepository
 import com.weappsinc.screenpet.feature.pet.domain.repository.PetSimulationRepository
 import dagger.Binds
 import dagger.Module
@@ -15,4 +17,8 @@ abstract class PetModule {
     @Binds
     @Singleton
     abstract fun bindPetSimulationRepository(impl: PetSimulationRepositoryImpl): PetSimulationRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindPetArenaRepository(impl: PetArenaRepositoryImpl): PetArenaRepository
 }

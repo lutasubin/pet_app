@@ -54,7 +54,7 @@ object PetArenaSimulator {
     private fun advanceEntity(playArea: PetPlayArea, entity: PetEntityState, petInput: PetInput): PetEntityState {
         val w = entity.toWorld(playArea)
         val nw = PetEngine.advance(w, petInput).getOrThrow()
-        return PetEntityState.fromWorld(nw)
+        return PetEntityState.fromWorld(nw, assetFolder = entity.assetFolder)
     }
 
     private fun mapOnePet(
