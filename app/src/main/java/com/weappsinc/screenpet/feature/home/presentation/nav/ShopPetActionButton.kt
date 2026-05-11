@@ -1,7 +1,7 @@
 package com.weappsinc.screenpet.feature.home.presentation.nav
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
@@ -13,6 +13,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CloudDownload
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -94,15 +95,15 @@ private fun DownloadActionButton(onClick: () -> Unit) {
 
 @Composable
 private fun SelectedActionButton() {
-    Button(
+    OutlinedButton(
         onClick = {},
         modifier = Modifier
             .fillMaxWidth()
-            .height(ACTION_HEIGHT)
-            .border(1.5.dp, HomeTokens.NavActive, RoundedCornerShape(999.dp)),
+            .height(ACTION_HEIGHT),
         shape = RoundedCornerShape(999.dp),
+        border = BorderStroke(1.dp, HomeTokens.NavActive),
         contentPadding = PaddingValues(horizontal = 10.dp, vertical = 0.dp),
-        colors = ButtonDefaults.buttonColors(
+        colors = ButtonDefaults.outlinedButtonColors(
             containerColor = Color.White,
             contentColor = HomeTokens.NavActive,
         ),

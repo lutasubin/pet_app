@@ -21,7 +21,9 @@ object HomeTokens {
     val Background: Color = Color(0xFFF7F2FA)
     /** Track switch tat: xam tim mo (#E1DFEE). */
     val SwitchOffTrack: Color = Color(0xFFE1DFEE)
-    /** Track switch bat (Kich hoat + Swarm). */
+    /** Track switch bat (true): hong #EF4094. */
+    val SwitchCheckedTrack: Color = Color(0xFFEF4094)
+    /** Tim — icon Swarm, chevron Mix, v.v. */
     val SwitchPurple: Color = Color(0xFF8152FF)
     val SwarmTitle: Color = Color(0xFF4A3F6B)
 

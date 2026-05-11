@@ -4,7 +4,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.weappsinc.screenpet.feature.home.domain.usecase.LoadShimejiCatalogUseCase
 import com.weappsinc.screenpet.feature.home.domain.usecase.ObserveHomeStateUseCase
-import com.weappsinc.screenpet.feature.home.domain.usecase.SeedDefaultUnlockedUseCase
 import com.weappsinc.screenpet.feature.home.domain.usecase.SelectShimejiAtSlotUseCase
 import com.weappsinc.screenpet.feature.home.domain.usecase.ToggleActivateUseCase
 import com.weappsinc.screenpet.feature.home.domain.usecase.ToggleSwarmUseCase
@@ -22,7 +21,6 @@ import kotlinx.coroutines.launch
 class HomeViewModel @Inject constructor(
     private val loadCatalog: LoadShimejiCatalogUseCase,
     private val observeHomeState: ObserveHomeStateUseCase,
-    private val seedDefaultUnlocked: SeedDefaultUnlockedUseCase,
     private val selectSlot: SelectShimejiAtSlotUseCase,
     private val unlockUseCase: UnlockShimejiUseCase,
     private val unlockNextSlotUseCase: UnlockNextSlotUseCase,
@@ -36,7 +34,6 @@ class HomeViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
-            seedDefaultUnlocked()
             val catalog = loadCatalog().getOrDefault(emptyList())
             _uiState.update { it.copy(catalog = catalog, isLoading = false) }
             observeHomeState().collect { state ->
