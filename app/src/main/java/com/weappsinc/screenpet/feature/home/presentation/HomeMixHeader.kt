@@ -37,7 +37,7 @@ fun HomeMixHeader(modifier: Modifier = Modifier) {
         Row(
             modifier = Modifier
                 .clip(RoundedCornerShape(50))
-                .background(HomeTokens.Background)
+                .background(Color.White.copy(alpha = 0.92f))
                 .padding(horizontal = 12.dp, vertical = 6.dp),
             verticalAlignment = Alignment.CenterVertically,
         ) {
@@ -54,7 +54,7 @@ fun HomeMixHeader(modifier: Modifier = Modifier) {
             Icon(
                 imageVector = Icons.Filled.KeyboardArrowDown,
                 contentDescription = null,
-                tint = HomeTokens.NavActive,
+                tint = HomeTokens.SwitchPurple,
             )
         }
     }

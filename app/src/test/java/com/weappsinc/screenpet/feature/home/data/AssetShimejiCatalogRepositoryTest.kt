@@ -8,25 +8,29 @@ import org.junit.Test
 
 class AssetShimejiCatalogRepositoryTest {
 
-    private class FakeLister(
-        private val data1: Array<String>?,
-        private val data2: Array<String>?,
+    private class FakeListerMap(
+        private val entries: Map<String, Array<String>?>,
     ) : AssetDirectoryLister {
-        override fun list(relativePath: String): Array<String>? = when (relativePath) {
-            "data1" -> data1
-            "data2" -> data2
-            else -> emptyArray()
-        }
+        override fun list(relativePath: String): Array<String>? =
+            entries[relativePath] ?: emptyArray()
     }
+
+    private fun repo(entries: Map<String, Array<String>?>): AssetShimejiCatalogRepository =
+        AssetShimejiCatalogRepository(FakeListerMap(entries))
 
     @Test
     fun merge_data1_truoc_data2_va_sap_xep_alpha() = runTest {
-        val lister = FakeLister(
-            data1 = arrayOf("Charlie", "Abbie"),
-            data2 = arrayOf("Zed", "Lori"),
+        val r = repo(
+            mapOf(
+                "data1" to arrayOf("Charlie", "Abbie"),
+                "data1/Abbie" to arrayOf("shime1.png"),
+                "data1/Charlie" to arrayOf("shime1.png"),
+                "data2" to arrayOf("Zed", "Lori"),
+                "data2/Zed" to arrayOf("shime1.png"),
+                "data2/Lori" to arrayOf("shime1.png"),
+            ),
         )
-        val repo = AssetShimejiCatalogRepository(lister)
-        val all = repo.loadAll().getOrThrow()
+        val all = r.loadAll().getOrThrow()
         assertEquals(4, all.size)
         assertEquals("Abbie", all[0].displayName)
         assertEquals(ShimejiPack.DATA1, all[0].pack)
@@ -38,17 +42,59 @@ class AssetShimejiCatalogRepositoryTest {
 
     @Test
     fun id_format_dung_pack_va_displayName() = runTest {
-        val lister = FakeLister(arrayOf("Abbie"), arrayOf("Lori"))
-        val repo = AssetShimejiCatalogRepository(lister)
-        val all = repo.loadAll().getOrThrow()
+        val r = repo(
+            mapOf(
+                "data1" to arrayOf("Abbie"),
+                "data1/Abbie" to arrayOf("shime1.png"),
+                "data2" to arrayOf("Lori"),
+                "data2/Lori" to arrayOf("shime1.png"),
+            ),
+        )
+        val all = r.loadAll().getOrThrow()
         assertTrue(all.any { it.id == "data1:Abbie" })
         assertTrue(all.any { it.id == "data2:Lori" })
         assertEquals("data1/Abbie/shime1.png", all.first { it.id == "data1:Abbie" }.thumbnailAssetPath)
     }
 
     @Test
+    fun thumbnail_chon_shime_so_nho_nhat_khi_thieu_shime1() = runTest {
+        val r = repo(
+            mapOf(
+                "data1" to arrayOf("Zoro"),
+                "data1/Zoro" to arrayOf("shime4.png", "shime9.png", "2", "walk"),
+            ),
+        )
+        val z = r.loadAll().getOrThrow().single()
+        assertEquals("data1:Zoro", z.id)
+        assertEquals("data1/Zoro/shime4.png", z.thumbnailAssetPath)
+    }
+
+    @Test
     fun null_assets_tra_ve_rong() = runTest {
-        val repo = AssetShimejiCatalogRepository(FakeLister(null, null))
-        assertEquals(0, repo.loadAll().getOrThrow().size)
+        val r = repo(mapOf("data1" to null, "data2" to null))
+        assertEquals(0, r.loadAll().getOrThrow().size)
+    }
+
+    @Test
+    fun lan_hai_loadAll_dung_cache_khong_doc_lister_them() = runTest {
+        var listCalls = 0
+        val lister = object : AssetDirectoryLister {
+            override fun list(relativePath: String): Array<String>? {
+                listCalls++
+                return when (relativePath) {
+                    "data1" -> arrayOf("A")
+                    "data1/A" -> arrayOf("shime1.png")
+                    "data2" -> arrayOf("B")
+                    "data2/B" -> arrayOf("shime1.png")
+                    else -> emptyArray()
+                }
+            }
+        }
+        val repo = AssetShimejiCatalogRepository(lister)
+        repo.loadAll().getOrThrow()
+        val afterFirst = listCalls
+        repo.loadAll().getOrThrow()
+        assertEquals(afterFirst, listCalls)
+        assertTrue(afterFirst >= 4)
     }
 }

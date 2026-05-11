@@ -66,6 +66,7 @@ class HomeViewModel @Inject constructor(
             viewModelScope.launch { unlockNextSlotUseCase() }
             return
         }
+        if (slotModel is HomeSlotUiModel.CharacterLocked) return
         _uiState.update { it.copy(pickerOpenForSlot = slot) }
     }
 

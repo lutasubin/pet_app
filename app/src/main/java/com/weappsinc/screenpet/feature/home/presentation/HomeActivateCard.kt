@@ -13,7 +13,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AutoAwesome
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Switch
-import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -54,23 +53,18 @@ fun HomeActivateCard(
         Column(modifier = Modifier.weight(1f)) {
             Text(
                 text = stringResource(R.string.home_activate_title),
-                color = Color.Black,
+                color = Color.White,
                 fontWeight = FontWeight.SemiBold,
             )
             Text(
                 text = stringResource(R.string.home_activate_subtitle),
-                color = Color.Black,
+                color = Color.White,
             )
         }
         Switch(
             checked = enabled,
             onCheckedChange = onChanged,
-            colors = SwitchDefaults.colors(
-                checkedThumbColor = Color.White,
-                checkedTrackColor = Color.White.copy(alpha = 0.35f),
-                uncheckedThumbColor = Color.White,
-                uncheckedTrackColor = Color.White.copy(alpha = 0.2f),
-            ),
+            colors = homeToggleSwitchColors(),
         )
     }
 }

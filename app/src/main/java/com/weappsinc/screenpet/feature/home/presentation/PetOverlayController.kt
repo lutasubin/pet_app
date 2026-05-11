@@ -36,6 +36,7 @@ class PetOverlayController @Inject constructor(
                 if (id == null) null
                 else byId[id]?.takeIf { unlocked.contains(it.id) }?.let { idx to it }
             }
+        // Swarm bat: tat ca slot da chon; tat: chi 1 pet (slot dau tien co pet).
         val chosen = when {
             !settings.activateEnabled -> emptyList()
             settings.swarmEnabled -> selected
