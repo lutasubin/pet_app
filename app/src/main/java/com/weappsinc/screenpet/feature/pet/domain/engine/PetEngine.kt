@@ -8,7 +8,10 @@ import com.weappsinc.screenpet.feature.pet.domain.model.PetPlayArea
 import com.weappsinc.screenpet.feature.pet.domain.model.PetRuntimePhase
 import com.weappsinc.screenpet.feature.pet.domain.model.PetWorldState
 
-/** May dieu khien pet: tiep nhan [PetInput], tra ve [PetWorldState] moi. */
+/**
+ * Kernel mo phong cho mot pet (mot [PetWorldState]).
+ * Nhieu pet: dung [com.weappsinc.screenpet.feature.pet.domain.petsim.PetArenaSimulator] + [PetArenaState].
+ */
 object PetEngine {
     private const val MIN_PLAY_SIZE_PX: Int = 128
 
@@ -17,7 +20,12 @@ object PetEngine {
             is PetInput.Layout -> handleLayout(world, input.playArea)
             is PetInput.PointerDown -> handlePointerDown(world, input.xPx, input.yPx)
             is PetInput.PointerMove -> handlePointerMove(world, input.xPx, input.yPx)
-            is PetInput.PointerUp -> handlePointerUp(world, input.releaseVelocityXPxPerSec, input.releaseVelocityYPxPerSec)
+            is PetInput.PointerUp ->
+                PetEnginePointerRelease.onPointerUp(
+                    world,
+                    input.releaseVelocityXPxPerSec,
+                    input.releaseVelocityYPxPerSec,
+                )
             is PetInput.Tick -> PetEnginePhysics.onTick(world, input.dtMs)
         }
     }
@@ -35,6 +43,7 @@ object PetEngine {
 
     private fun handlePointerDown(world: PetWorldState, x: Float, y: Float): PetWorldState {
         val s = world.snapshot
+        if (s.phase == PetRuntimePhase.PreviewHold) return world
         if (!PetBoundsGeometry.hitTestPointer(x, y, s)) return world
         return world.copy(
             snapshot = s.copy(
@@ -48,10 +57,13 @@ object PetEngine {
                 frameIndex = 0,
                 msAccumulatedInFrame = 0f,
             ),
+            dragAnchorStartXPx = s.anchorXPx,
+            dragAnchorStartYPx = s.anchorYPx,
         )
     }
 
     private fun handlePointerMove(world: PetWorldState, x: Float, y: Float): PetWorldState {
+        if (world.snapshot.phase == PetRuntimePhase.PreviewHold) return world
         if (!world.snapshot.isDragging) return world
         val s = world.snapshot
         val moved = s.copy(
@@ -61,22 +73,6 @@ object PetEngine {
         val clamped = PetBoundsGeometry.clampAnchor(moved, world.playArea)
         return world.copy(
             snapshot = clamped.copy(contact = PetBoundsGeometry.computeContact(clamped, world.playArea)),
-        )
-    }
-
-    private fun handlePointerUp(world: PetWorldState, vx: Float, vy: Float): PetWorldState {
-        if (!world.snapshot.isDragging) return world
-        val s = world.snapshot
-        return world.copy(
-            snapshot = s.copy(
-                isDragging = false,
-                phase = PetRuntimePhase.Airborne,
-                clipId = ShimejiClipId.Falling,
-                velocityXPxPerSec = vx,
-                velocityYPxPerSec = vy,
-                frameIndex = 0,
-                msAccumulatedInFrame = 0f,
-            ),
         )
     }
 }

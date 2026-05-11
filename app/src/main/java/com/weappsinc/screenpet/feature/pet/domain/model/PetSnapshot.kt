@@ -20,4 +20,6 @@ data class PetSnapshot(
     val dragGrabOffsetXPx: Float,
     val dragGrabOffsetYPx: Float,
     val bouncePhaseRemainingMs: Long,
+    /** True: dang bò tuong xuong san (tu mép trên keo ra mép). */
+    val wallDescend: Boolean = false,
 )

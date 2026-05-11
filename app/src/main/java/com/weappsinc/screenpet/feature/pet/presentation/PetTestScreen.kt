@@ -21,6 +21,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.weappsinc.screenpet.R
+import com.weappsinc.screenpet.feature.pet.domain.model.PetRuntimePhase
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -66,8 +67,30 @@ fun PetTestScreen(
                 }
             }
             val overlayOn by viewModel.overlayActive.collectAsStateWithLifecycle()
-            if (overlayOn) {
-                Text(
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp, vertical = 4.dp),
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+            ) {
+                OutlinedButton(
+                    onClick = { viewModel.startDemoActionPlaylist() },
+                    enabled = !overlayOn,
+                ) {
+                    Text(stringResource(R.string.pet_demo_actions))
+                }
+                OutlinedButton(
+                    onClick = { viewModel.startDemoAllClips() },
+                    enabled = !overlayOn,
+                ) {
+                    Text(stringResource(R.string.pet_demo_clips))
+                }
+                OutlinedButton(onClick = { viewModel.stopAllDemos() }) {
+                    Text(stringResource(R.string.pet_demo_stop))
+                }
+            }
+            when {
+                overlayOn -> Text(
                     text = stringResource(R.string.pet_overlay_running_in_overlay),
                     style = MaterialTheme.typography.bodyMedium,
                     modifier = Modifier
@@ -75,14 +98,25 @@ fun PetTestScreen(
                         .weight(1f)
                         .fillMaxWidth(),
                 )
-            } else {
-                PetPlayField(
-                    world = world,
-                    eventSink = viewModel,
-                    modifier = Modifier
-                        .weight(1f)
-                        .fillMaxWidth(),
-                )
+                else -> {
+                    if (world.snapshot.phase == PetRuntimePhase.PreviewHold) {
+                        Text(
+                            text = stringResource(
+                                R.string.pet_demo_clip_label,
+                                world.snapshot.clipId.name,
+                            ),
+                            style = MaterialTheme.typography.labelLarge,
+                            modifier = Modifier.padding(horizontal = 16.dp, vertical = 4.dp),
+                        )
+                    }
+                    PetPlayField(
+                        world = world,
+                        eventSink = viewModel,
+                        modifier = Modifier
+                            .weight(1f)
+                            .fillMaxWidth(),
+                    )
+                }
             }
         }
     }

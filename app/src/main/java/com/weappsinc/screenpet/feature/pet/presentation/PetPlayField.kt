@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.offset
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.pointerInput
@@ -38,9 +39,10 @@ fun PetPlayField(
         val leftPx = snap.anchorXPx - PetSpriteAnchor.ANCHOR_X_IN_SPRITE
         val topPx = snap.anchorYPx - PetSpriteAnchor.ANCHOR_Y_IN_SPRITE
         val snapState = rememberUpdatedState(snap)
+        val velocityTracker = remember { PetDragVelocityTracker() }
         PetShimeSprite(
             assetRelativePath = path,
-            flipHorizontal = !snap.lookRight,
+            flipHorizontal = snap.lookRight,
             modifier = Modifier
                 .offset { IntOffset(leftPx.roundToInt(), topPx.roundToInt()) }
                 .pointerInput(Unit) {
@@ -54,16 +56,26 @@ fun PetPlayField(
                             startY = snapState.value.anchorYPx
                             totalDx = 0f
                             totalDy = 0f
+                            velocityTracker.reset(startX, startY)
                             eventSink.onPointerDown(startX, startY)
                         },
                         onDrag = { change, dragAmount ->
                             change.consume()
                             totalDx += dragAmount.x
                             totalDy += dragAmount.y
-                            eventSink.onPointerMove(startX + totalDx, startY + totalDy)
+                            val ax = startX + totalDx
+                            val ay = startY + totalDy
+                            velocityTracker.addSample(ax, ay)
+                            eventSink.onPointerMove(ax, ay)
                         },
-                        onDragEnd = { eventSink.onPointerUp() },
-                        onDragCancel = { eventSink.onPointerUp() },
+                        onDragEnd = {
+                            val (vx, vy) = velocityTracker.velocityPxPerSec()
+                            eventSink.onPointerUp(vx, vy)
+                        },
+                        onDragCancel = {
+                            val (vx, vy) = velocityTracker.velocityPxPerSec()
+                            eventSink.onPointerUp(vx, vy)
+                        },
                     )
                 },
         )

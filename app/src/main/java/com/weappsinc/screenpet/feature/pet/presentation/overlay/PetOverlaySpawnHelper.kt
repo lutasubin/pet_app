@@ -32,8 +32,9 @@ object PetOverlaySpawnHelper {
                     isDragging = false,
                     frameIndex = 0,
                     msAccumulatedInFrame = 0f,
+                    wallDescend = false,
                 )
-                repository.replace(cur.copy(snapshot = s))
+                repository.replace(cur.clearedDragAnchors().copy(snapshot = s))
             }
         }
     }

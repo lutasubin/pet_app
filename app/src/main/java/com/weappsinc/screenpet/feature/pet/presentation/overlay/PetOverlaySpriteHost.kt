@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.pointerInput
@@ -14,6 +15,7 @@ import com.weappsinc.screenpet.core.constants.PetAssetPaths
 import com.weappsinc.screenpet.core.constants.PetSpriteAnchor
 import com.weappsinc.screenpet.core.constants.ShimejiFrameCatalog
 import com.weappsinc.screenpet.feature.pet.domain.repository.PetSimulationRepository
+import com.weappsinc.screenpet.feature.pet.presentation.PetDragVelocityTracker
 import com.weappsinc.screenpet.feature.pet.presentation.PetPlayEventSink
 import com.weappsinc.screenpet.feature.pet.presentation.PetShimeSprite
 import com.weappsinc.screenpet.feature.pet.presentation.PetSpritePrefetcher
@@ -29,6 +31,7 @@ fun PetOverlaySpriteHost(
     val sizePx = PetSpriteAnchor.SPRITE_WIDTH_PX * PetSpriteAnchor.OVERLAY_DISPLAY_SCALE
     val sizeDp = with(density) { sizePx.toDp() }
     val snapState = rememberUpdatedState(world.snapshot)
+    val velocityTracker = remember { PetDragVelocityTracker() }
     val clip = ShimejiFrameCatalog.clip(world.snapshot.clipId)
     val idx = world.snapshot.frameIndex.coerceIn(0, clip.frameIndices.lastIndex)
     val path = PetAssetPaths.shimeRelativePath(clip.frameIndices[idx])
@@ -48,22 +51,32 @@ fun PetOverlaySpriteHost(
                             startY = snapState.value.anchorYPx
                             totalDx = 0f
                             totalDy = 0f
+                            velocityTracker.reset(startX, startY)
                             eventSink.onPointerDown(startX, startY)
                         },
                         onDrag = { change, dragAmount ->
                             change.consume()
                             totalDx += dragAmount.x
                             totalDy += dragAmount.y
-                            eventSink.onPointerMove(startX + totalDx, startY + totalDy)
+                            val ax = startX + totalDx
+                            val ay = startY + totalDy
+                            velocityTracker.addSample(ax, ay)
+                            eventSink.onPointerMove(ax, ay)
                         },
-                        onDragEnd = { eventSink.onPointerUp() },
-                        onDragCancel = { eventSink.onPointerUp() },
+                        onDragEnd = {
+                            val (vx, vy) = velocityTracker.velocityPxPerSec()
+                            eventSink.onPointerUp(vx, vy)
+                        },
+                        onDragCancel = {
+                            val (vx, vy) = velocityTracker.velocityPxPerSec()
+                            eventSink.onPointerUp(vx, vy)
+                        },
                     )
                 },
         ) {
             PetShimeSprite(
                 assetRelativePath = path,
-                flipHorizontal = !world.snapshot.lookRight,
+                flipHorizontal = world.snapshot.lookRight,
                 sizePxOverride = sizePx.takeIf { it != PetSpriteAnchor.SPRITE_WIDTH_PX },
             )
         }

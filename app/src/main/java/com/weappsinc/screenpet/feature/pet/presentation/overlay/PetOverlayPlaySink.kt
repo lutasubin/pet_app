@@ -27,7 +27,11 @@ class PetOverlayPlaySink(
         scope.launch { dispatchPetInputUseCase(PetInput.PointerMove(xPx, yPx)) }
     }
 
-    override fun onPointerUp() {
-        scope.launch { dispatchPetInputUseCase(PetInput.PointerUp()) }
+    override fun onPointerUp(releaseVelocityXPxPerSec: Float, releaseVelocityYPxPerSec: Float) {
+        scope.launch {
+            dispatchPetInputUseCase(
+                PetInput.PointerUp(releaseVelocityXPxPerSec, releaseVelocityYPxPerSec),
+            )
+        }
     }
 }

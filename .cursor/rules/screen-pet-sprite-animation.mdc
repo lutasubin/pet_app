@@ -36,11 +36,16 @@ modifier = Modifier.size(w)
   thi dieu chinh `SHIMEJI_TICK_MS` (giu nguyen catalog Shimeji goc).
 
 ## Huong nhin (lookRight)
-Sprite Shimeji goc huong PHAI. Khi `snapshot.lookRight = false` PHAI flip ngang:
+Bo asset shime trong project huong TRAI (khac mot so ban goc). Khi `lookRight = true` (di sang phai)
+can flip ngang de mat nhin dung huong di chuyen:
 ```kotlin
-PetShimeSprite(path, flipHorizontal = !snap.lookRight)
+PetShimeSprite(path, flipHorizontal = snap.lookRight)
 ```
 Implement bang `Modifier.graphicsLayer { scaleX = if (flip) -1f else 1f }` trong `PetShimeSprite`.
+
+## Demo hanh dong (46 khung)
+- Khong quet `shime1..46` tuan tu; dung `PetDemoActionPlaylist` (clip + thoi gian) de gom nhieu frame thanh hanh dong that.
+- Nut `Het clip` van co the dung de duyet day du `ShimejiClipId` theo enum (ky thuat).
 
 ## Khi them clip moi
 1. Khai bao `ShimejiClipId` moi.

@@ -17,6 +17,7 @@ internal object PetEngineWallPhysics {
                 velocityXPxPerSec = 0f,
                 velocityYPxPerSec = 0f,
                 anchorXPx = PetBoundsGeometry.minAnchorX(world.playArea),
+                wallDescend = false,
             )
         }
         if (c.wallRight && s.velocityXPxPerSec > 40f) {
@@ -26,37 +27,14 @@ internal object PetEngineWallPhysics {
                 velocityXPxPerSec = 0f,
                 velocityYPxPerSec = 0f,
                 anchorXPx = PetBoundsGeometry.maxAnchorX(world.playArea),
+                wallDescend = false,
             )
         }
         return s
     }
 
-    fun wallClimbTick(s: PetSnapshot, world: PetWorldState, dt: Float): PetSnapshot {
-        val climbVy = -220f
-        var ns = s.copy(
-            clipId = ShimejiClipId.ClimbWall,
-            velocityXPxPerSec = 0f,
-            velocityYPxPerSec = climbVy,
-            anchorYPx = s.anchorYPx + climbVy * dt,
-        )
-        ns = PetBoundsGeometry.clampAnchor(ns, world.playArea)
-        val c = PetBoundsGeometry.computeContact(ns, world.playArea)
-        if (c.ceiling) {
-            return ns.copy(
-                phase = PetRuntimePhase.Ceiling,
-                clipId = ShimejiClipId.GrabCeiling,
-                velocityYPxPerSec = 0f,
-            )
-        }
-        if (!c.wallLeft && !c.wallRight) {
-            return ns.copy(
-                phase = PetRuntimePhase.Airborne,
-                clipId = ShimejiClipId.Falling,
-                velocityYPxPerSec = 120f,
-            )
-        }
-        return ns
-    }
+    fun wallClimbTick(s: PetSnapshot, world: PetWorldState, dt: Float): PetSnapshot =
+        PetEngineWallClimb.tick(s, world, dt)
 
     fun ceilingTick(s: PetSnapshot, world: PetWorldState, dt: Float): PetSnapshot {
         val vx = if (s.lookRight) 90f else -90f
@@ -73,6 +51,7 @@ internal object PetEngineWallPhysics {
                 phase = PetRuntimePhase.Airborne,
                 clipId = ShimejiClipId.Falling,
                 velocityYPxPerSec = 80f,
+                wallDescend = false,
             )
         }
         return ns

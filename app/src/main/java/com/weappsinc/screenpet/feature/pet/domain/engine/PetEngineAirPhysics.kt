@@ -10,12 +10,18 @@ internal object PetEngineAirPhysics {
     fun integrateAirborne(s: PetSnapshot, dt: Float): PetSnapshot {
         val vy = s.velocityYPxPerSec + PetPhysicsConstants.GRAVITY_PX_PER_SEC2 * dt
         val vx = s.velocityXPxPerSec
+        val look = when {
+            vx > 40f -> true
+            vx < -40f -> false
+            else -> s.lookRight
+        }
         return s.copy(
             velocityYPxPerSec = vy,
             velocityXPxPerSec = vx,
             anchorXPx = s.anchorXPx + vx * dt,
             anchorYPx = s.anchorYPx + vy * dt,
             clipId = ShimejiClipId.Falling,
+            lookRight = look,
         )
     }
 

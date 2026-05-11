@@ -11,13 +11,15 @@ alwaysApply: true
 
 ## FSM - PetRuntimePhase
 States (KHONG them state moi neu khong cap nhat ca engine + transitions):
-`GroundIdle`, `GroundMoving`, `Airborne`, `Bouncing`, `Dragged`, `WallLeft`, `WallRight`, `Ceiling`.
+`GroundIdle`, `GroundMoving`, `Airborne`, `Bouncing`, `Dragged`, `WallLeft`, `WallRight`, `Ceiling`, `PreviewHold`.
+
+`PreviewHold`: chi `PetClipPlayback.advance` + clamp (khong vat ly); dung `ShowcasePetClipUseCase` de xem lan luot clip catalog.
 
 Quy tac chuyen state:
 - Drag start -> `Dragged` (velocity = 0, dragGrabOffset = anchor - pointer).
 - Drag end -> `Airborne` (velocity = release velocity, clip = Falling).
 - `Airborne` cham san -> `Bouncing` (BOUNCE_PHASE_MS).
-- `Bouncing` het thoi gian -> `GroundIdle` hoac `GroundMoving`.
+- `Bouncing` het thoi gian -> `GroundMoving` + clip `Walk` (tiep tuc di sau khi roi).
 - Trong `Dragged`: engine return som; chi advance clip frame, KHONG ap physics.
 
 ## Physics

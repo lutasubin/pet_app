@@ -10,4 +10,8 @@
     <string name="pet_overlay_stop">Tat pet noi</string>
     <string name="pet_overlay_grant_overlay">Mo cai dat quyen noi</string>
     <string name="pet_overlay_running_in_overlay">Pet dang chay tren toan man hinh (tat o thong bao hoac nut ben duoi).</string>
+    <string name="pet_demo_actions">Hanh dong mau (46 khung)</string>
+    <string name="pet_demo_clips">Het clip (theo enum)</string>
+    <string name="pet_demo_stop">Tat demo</string>
+    <string name="pet_demo_clip_label">Dang xem clip: %1$s</string>
 </resources>

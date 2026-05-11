@@ -5,5 +5,5 @@ interface PetPlayEventSink {
     fun onPlayAreaSized(widthPx: Int, heightPx: Int)
     fun onPointerDown(xPx: Float, yPx: Float)
     fun onPointerMove(xPx: Float, yPx: Float)
-    fun onPointerUp()
+    fun onPointerUp(releaseVelocityXPxPerSec: Float = 0f, releaseVelocityYPxPerSec: Float = 0f)
 }

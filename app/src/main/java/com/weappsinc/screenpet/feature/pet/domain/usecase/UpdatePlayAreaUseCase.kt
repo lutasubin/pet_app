@@ -1,7 +1,8 @@
 package com.weappsinc.screenpet.feature.pet.domain.usecase
 
-import com.weappsinc.screenpet.feature.pet.domain.engine.PetEngine
-import com.weappsinc.screenpet.feature.pet.domain.model.PetInput
+import com.weappsinc.screenpet.feature.pet.domain.petsim.PetArenaInput
+import com.weappsinc.screenpet.feature.pet.domain.petsim.PetArenaSimulator
+import com.weappsinc.screenpet.feature.pet.domain.petsim.PetArenaState
 import com.weappsinc.screenpet.feature.pet.domain.model.PetPlayArea
 import com.weappsinc.screenpet.feature.pet.domain.repository.PetSimulationRepository
 import com.weappsinc.screenpet.feature.pet.domain.sync.PetSimulationUpdateMutex
@@ -14,8 +15,10 @@ class UpdatePlayAreaUseCase @Inject constructor(
 ) {
     suspend operator fun invoke(playArea: PetPlayArea): Result<Unit> = writeMutex.mutex.withLock {
         val cur = repository.world.value
-        val next = PetEngine.advance(cur, PetInput.Layout(playArea)).getOrElse { return@withLock Result.failure(it) }
-        repository.replace(next)
+        val arena = PetArenaState.fromPrimaryWorld(cur)
+        val nextArena = PetArenaSimulator.advance(arena, PetArenaInput.Layout(playArea))
+            .getOrElse { return@withLock Result.failure(it) }
+        repository.replace(nextArena.toPrimaryWorld())
         Result.success(Unit)
     }
 }

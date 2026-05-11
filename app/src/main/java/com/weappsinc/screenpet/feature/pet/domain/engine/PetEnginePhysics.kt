@@ -31,6 +31,7 @@ internal object PetEnginePhysics {
             PetRuntimePhase.WallLeft, PetRuntimePhase.WallRight ->
                 PetEngineWallPhysics.wallClimbTick(s, world, dt)
             PetRuntimePhase.Ceiling -> PetEngineWallPhysics.ceilingTick(s, world, dt)
+            PetRuntimePhase.PreviewHold -> s
         }
         s = PetEngineWallPhysics.tryStickWallFromAir(s, world)
         s = PetEngineAirPhysics.resolveLanding(s, world, dtMs)
@@ -38,11 +39,29 @@ internal object PetEnginePhysics {
         return world.copy(snapshot = s.copy(contact = PetBoundsGeometry.computeContact(s, world.playArea)))
     }
 
-    private fun groundIdle(s: PetSnapshot): PetSnapshot = s.copy(
-        velocityXPxPerSec = 0f,
-        velocityYPxPerSec = 0f,
-        clipId = ShimejiClipId.Stand,
-    )
+    private fun groundIdle(s: PetSnapshot): PetSnapshot {
+        if (s.clipId in IdlePoseClips.set) {
+            return s.copy(velocityXPxPerSec = 0f, velocityYPxPerSec = 0f)
+        }
+        return s.copy(
+            velocityXPxPerSec = 0f,
+            velocityYPxPerSec = 0f,
+            clipId = ShimejiClipId.Stand,
+        )
+    }
+
+    private object IdlePoseClips {
+        val set: Set<ShimejiClipId> = setOf(
+            ShimejiClipId.Sit,
+            ShimejiClipId.SitLookUp,
+            ShimejiClipId.SitSpinHead,
+            ShimejiClipId.SitLegsUp,
+            ShimejiClipId.SitLegsDown,
+            ShimejiClipId.SitDangleLegs,
+            ShimejiClipId.Sprawl,
+            ShimejiClipId.GrabCeiling,
+        )
+    }
 
     private fun groundMoving(s: PetSnapshot, world: PetWorldState, dt: Float): PetSnapshot {
         var ns = s.copy(clipId = ShimejiClipId.Walk)
@@ -69,11 +88,12 @@ internal object PetEnginePhysics {
         val left = (ns.bouncePhaseRemainingMs - dtMs).coerceAtLeast(0L)
         return if (left == 0L) {
             ns.copy(
-                phase = PetRuntimePhase.GroundIdle,
-                clipId = ShimejiClipId.Stand,
+                phase = PetRuntimePhase.GroundMoving,
+                clipId = ShimejiClipId.Walk,
                 bouncePhaseRemainingMs = 0L,
                 frameIndex = 0,
                 msAccumulatedInFrame = 0f,
+                wallDescend = false,
             )
         } else {
             ns.copy(bouncePhaseRemainingMs = left)

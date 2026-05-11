@@ -59,7 +59,8 @@ class PetEngineTest {
             cur = PetEngine.advance(cur, PetInput.Tick(16)).getOrThrow()
         }
         assertTrue(
-            cur.snapshot.phase == PetRuntimePhase.GroundIdle ||
+            cur.snapshot.phase == PetRuntimePhase.GroundMoving ||
+                cur.snapshot.phase == PetRuntimePhase.GroundIdle ||
                 cur.snapshot.phase == PetRuntimePhase.Bouncing,
         )
         assertTrue(cur.snapshot.anchorYPx <= area.heightPx.toFloat() + 1f)
