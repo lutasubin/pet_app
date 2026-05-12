@@ -26,6 +26,7 @@ fun ShopScreen(
     onQueryChange: (String) -> Unit,
     onUnlock: (String) -> Unit,
     onDownload: (String) -> Unit,
+    onSelect: (String) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Surface(modifier = modifier.fillMaxSize(), color = HomeTokens.Background) {
@@ -57,6 +58,7 @@ fun ShopScreen(
                             downloaded = ch.id in state.downloadedIds,
                             onUnlock = { onUnlock(ch.id) },
                             onDownload = { onDownload(ch.id) },
+                            onSelect = { onSelect(ch.id) },
                         )
                     }
                 }

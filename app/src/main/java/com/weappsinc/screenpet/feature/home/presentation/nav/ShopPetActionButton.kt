@@ -33,6 +33,7 @@ fun ShopPetActionButton(
     downloaded: Boolean,
     onUnlock: () -> Unit,
     onDownload: () -> Unit,
+    onSelect: () -> Unit,
 ) {
     when {
         !unlocked -> GradientActionButton(
@@ -40,7 +41,7 @@ fun ShopPetActionButton(
             onClick = onUnlock,
         )
         !downloaded -> DownloadActionButton(onClick = onDownload)
-        else -> SelectedActionButton()
+        else -> SelectedActionButton(onClick = onSelect)
     }
 }
 
@@ -94,9 +95,9 @@ private fun DownloadActionButton(onClick: () -> Unit) {
 }
 
 @Composable
-private fun SelectedActionButton() {
+private fun SelectedActionButton(onClick: () -> Unit) {
     OutlinedButton(
-        onClick = {},
+        onClick = onClick,
         modifier = Modifier
             .fillMaxWidth()
             .height(ACTION_HEIGHT),

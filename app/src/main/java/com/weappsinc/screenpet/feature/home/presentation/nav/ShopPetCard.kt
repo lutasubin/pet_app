@@ -33,6 +33,7 @@ fun ShopPetCard(
     downloaded: Boolean,
     onUnlock: () -> Unit,
     onDownload: () -> Unit,
+    onSelect: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Column(modifier = modifier, verticalArrangement = Arrangement.spacedBy(8.dp)) {
@@ -81,6 +82,7 @@ fun ShopPetCard(
             downloaded = downloaded,
             onUnlock = onUnlock,
             onDownload = onDownload,
+            onSelect = onSelect,
         )
     }
 }
