@@ -15,6 +15,8 @@ import com.weappsinc.screenpet.feature.pet.domain.repository.PetArenaRepository
 import com.weappsinc.screenpet.feature.pet.domain.usecase.DispatchArenaInputUseCase
 import com.weappsinc.screenpet.feature.pet.domain.usecase.TickArenaUseCase
 import com.weappsinc.screenpet.feature.pet.domain.usecase.UpdateArenaPlayAreaUseCase
+import com.weappsinc.screenpet.feature.settings.domain.model.AppSettings
+import com.weappsinc.screenpet.feature.settings.domain.repository.AppSettingsRepository
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 import kotlinx.coroutines.CoroutineScope
@@ -24,6 +26,7 @@ import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.isActive
@@ -34,6 +37,7 @@ import kotlinx.coroutines.launch
 class PetOverlayService : Service() {
 
     @Inject lateinit var repository: PetArenaRepository
+    @Inject lateinit var appSettingsRepository: AppSettingsRepository
     @Inject lateinit var tickArenaUseCase: TickArenaUseCase
     @Inject lateinit var updateArenaPlayAreaUseCase: UpdateArenaPlayAreaUseCase
     @Inject lateinit var dispatchArenaInputUseCase: DispatchArenaInputUseCase
@@ -41,7 +45,11 @@ class PetOverlayService : Service() {
 
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate)
     private var tickJob: Job? = null
+    private var observeJob: Job? = null
     private var manager: PetArenaOverlayHostManager? = null
+
+    @Volatile
+    private var tickSpeedMultiplier: Float = AppSettings.DEFAULT_ANIMATION_SPEED_MULT
 
     override fun onCreate() {
         super.onCreate()
@@ -63,17 +71,24 @@ class PetOverlayService : Service() {
             updateArenaPlayAreaUseCase = updateArenaPlayAreaUseCase,
             dispatchArenaInputUseCase = dispatchArenaInputUseCase,
         )
-        observeArenaPets()
+        observeArenaAndSettings()
         startTickLoop()
         toast("Pet noi: bat")
     }
 
-    private fun observeArenaPets() {
-        scope.launch {
-            repository.arena
-                .map { it.pets.keys.toSet() }
-                .distinctUntilChanged()
-                .collectLatest { manager?.sync(it) }
+    private fun observeArenaAndSettings() {
+        observeJob = scope.launch {
+            combine(
+                repository.arena.map { it.pets.keys.toSet() }.distinctUntilChanged(),
+                appSettingsRepository.settings,
+            ) { ids, settings -> ids to settings }
+                .collectLatest { (ids, settings) ->
+                    tickSpeedMultiplier = settings.animationSpeedMultiplier.coerceIn(
+                        AppSettings.MIN_SPEED_MULT,
+                        AppSettings.MAX_SPEED_MULT,
+                    )
+                    manager?.sync(ids, settings)
+                }
         }
     }
 
@@ -81,7 +96,8 @@ class PetOverlayService : Service() {
         tickJob = scope.launch {
             while (isActive) {
                 delay(TICK_MS)
-                tickArenaUseCase(TICK_MS)
+                val dt = (TICK_MS * tickSpeedMultiplier).toLong().coerceAtLeast(1L)
+                tickArenaUseCase(dt)
             }
         }
     }
@@ -97,6 +113,7 @@ class PetOverlayService : Service() {
     override fun onDestroy() {
         Log.i(TAG, "onDestroy")
         tickJob?.cancel()
+        observeJob?.cancel()
         manager?.detachAll()
         manager = null
         scope.cancel()

@@ -20,17 +20,19 @@ import com.weappsinc.screenpet.feature.pet.presentation.PetDragVelocityTracker
 import com.weappsinc.screenpet.feature.pet.presentation.PetPlayEventSink
 import com.weappsinc.screenpet.feature.pet.presentation.PetShimeSprite
 import com.weappsinc.screenpet.ui.theme.App_petTheme
+import kotlin.math.roundToInt
 
 @Composable
 fun PetArenaOverlaySpriteHost(
     repository: PetArenaRepository,
     petId: PetId,
     eventSink: PetPlayEventSink,
+    displayScale: Float,
 ) {
     val arena by repository.arena.collectAsStateWithLifecycle()
     val entity = arena.pets[petId] ?: return
     val density = LocalDensity.current
-    val sizePx = PetSpriteAnchor.SPRITE_WIDTH_PX * PetSpriteAnchor.OVERLAY_DISPLAY_SCALE
+    val sizePx = PetSpriteAnchor.SPRITE_WIDTH_PX * displayScale
     val sizeDp = with(density) { sizePx.toDp() }
     val snapState = rememberUpdatedState(entity.snapshot)
     val velocityTracker = remember { PetDragVelocityTracker() }
@@ -78,7 +80,7 @@ fun PetArenaOverlaySpriteHost(
             PetShimeSprite(
                 assetRelativePath = path,
                 flipHorizontal = entity.snapshot.lookRight,
-                sizePxOverride = sizePx.takeIf { it != PetSpriteAnchor.SPRITE_WIDTH_PX },
+                sizePxOverride = sizePx.roundToInt().takeIf { it != PetSpriteAnchor.SPRITE_WIDTH_PX },
             )
         }
     }

@@ -36,7 +36,10 @@ fun ShopScreen(
                     .padding(horizontal = 16.dp, vertical = 12.dp),
                 verticalArrangement = Arrangement.spacedBy(14.dp),
             ) {
-                HomeTitleText(text = stringResource(R.string.home_title))
+                HomeTitleText(
+                    text = stringResource(R.string.home_title),
+                    useGradient = true,
+                )
                 ShopSearchBar(
                     value = state.query,
                     onValueChange = onQueryChange,

@@ -1,0 +1,36 @@
+<resources>
+    <string name="splash_title">Shimeji live</string>
+    <string name="home_tab_home">Trang chủ</string>
+    <string name="home_tab_shop">Cửa hàng</string>
+    <string name="home_tab_setting">Cài đặt</string>
+    <string name="home_title">Shimeji live</string>
+    <string name="home_activate_title">Kích hoạt Shimeji</string>
+    <string name="home_activate_subtitle">Bật tính năng để trải nghiệm</string>
+    <string name="home_swarm_title">Chế độ bầy pet</string>
+    <string name="home_mix_sheet_option_1">Ngẫu nhiên 1 pet</string>
+    <string name="home_mix_sheet_option_2">Ngẫu nhiên 2 pet</string>
+    <string name="home_mix_sheet_option_3">Ngẫu nhiên 3 pet</string>
+    <string name="home_mix_sheet_option_4">Ngẫu nhiên 4 pet</string>
+    <string name="home_mix_sheet_option_5">Ngẫu nhiên 5 pet</string>
+    <string name="home_mix_sheet_option_6">Ngẫu nhiên 6 pet</string>
+    <string name="home_unlock">Mở khóa</string>
+    <string name="shop_placeholder">Cửa hàng sắp ra mắt</string>
+    <string name="shop_search_hint">Tìm pet...</string>
+    <string name="shop_download">Tải xuống</string>
+    <string name="shop_selected">Chọn</string>
+    <string name="shop_downloading">Đang tải...(%1$d%%)</string>
+    <string name="settings_section_animation">Điều khiển animation</string>
+    <string name="settings_section_general">Chung</string>
+    <string name="settings_ghost_title">Chế độ ma</string>
+    <string name="settings_ghost_subtitle">Khi bật chế độ này, bạn sẽ không thể tương tác với nhân vật trên màn hình.</string>
+    <string name="settings_size_title">Kích thước</string>
+    <string name="settings_speed_title">Tốc độ</string>
+    <string name="settings_language_title">Ngôn ngữ</string>
+    <string name="settings_language_system">Hệ thống</string>
+    <string name="settings_language_en">Tiếng Anh</string>
+    <string name="settings_language_sheet_title">Ngôn ngữ</string>
+    <string name="settings_rate_title">Đánh giá ứng dụng</string>
+    <string name="settings_share_title">Chia sẻ</string>
+    <string name="settings_share_message">Thử Shimeji live: https://play.google.com/store/apps/details?id=%1$s</string>
+    <string name="settings_policy_title">Chính sách riêng tư</string>
+</resources>

@@ -24,8 +24,9 @@ class PetArenaOverlayPositionSync(
             repository.arena.map { it.pets[petId] }.collectLatest { entity ->
                 entity ?: return@collectLatest
                 val s = entity.snapshot
-                val ax = PetSpriteAnchor.ANCHOR_X_IN_SPRITE * PetSpriteAnchor.OVERLAY_DISPLAY_SCALE
-                val ay = PetSpriteAnchor.ANCHOR_Y_IN_SPRITE * PetSpriteAnchor.OVERLAY_DISPLAY_SCALE
+                val sc = host.displayScalePx
+                val ax = PetSpriteAnchor.ANCHOR_X_IN_SPRITE * sc
+                val ay = PetSpriteAnchor.ANCHOR_Y_IN_SPRITE * sc
                 val x = (s.anchorXPx - ax).toInt()
                 val y = (s.anchorYPx - ay).toInt()
                 host.update(x, y)

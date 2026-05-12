@@ -10,6 +10,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import com.weappsinc.screenpet.feature.home.presentation.HomeRoute
+import com.weappsinc.screenpet.feature.settings.presentation.SettingsRoute
 
 @Composable
 fun MainScaffold(
@@ -34,7 +35,7 @@ fun MainScaffold(
             MainTab.Setting -> if (devOpen) {
                 devMenuContent()
             } else {
-                SettingsPlaceholderScreen(
+                SettingsRoute(
                     onOpenDevMenu = { devOpen = true },
                     modifier = Modifier.padding(padding),
                 )

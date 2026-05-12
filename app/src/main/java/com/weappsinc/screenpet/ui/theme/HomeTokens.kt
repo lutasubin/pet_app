@@ -49,4 +49,13 @@ object HomeTokens {
         Color(0xFFEF4094),
         Color(0xFF8152FF),
     )
+
+    /** Net track slider Settings (Size/Speed): rat mong, hai dau tron. */
+    val SettingsSliderTrackStrokeDp: Dp = 2.dp
+    /** Chieu cao vung ve track (thumb M3 de len tren). */
+    val SettingsSliderTrackLayoutHeightDp: Dp = 10.dp
+    /** Thumb tron nho, cung mau voi doan track active. */
+    val SettingsSliderThumbSizeDp: Dp = 14.dp
+    /** Phan track chua keo: hong rat nhat gan trang. */
+    val SettingsSliderInactiveTrack: Color = Color(0xFFFFF5F9)
 }
