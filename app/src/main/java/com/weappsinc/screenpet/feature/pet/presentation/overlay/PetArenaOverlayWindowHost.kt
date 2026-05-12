@@ -121,7 +121,9 @@ class PetArenaOverlayWindowHost(
     }
 
     private fun overlayFlags(ghost: Boolean): Int {
+        // FLAG_LAYOUT_NO_LIMITS: cho phep window vuot ngoai vung an toan -> pet bam sat mep that su.
         val base = WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN or
+            WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS or
             WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE or
             WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED
         return if (ghost) {

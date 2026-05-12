@@ -158,6 +158,8 @@ internal object PetEngineWallPhysics {
             anchorXPx = s.anchorXPx + vx * dt,
         )
         ns = PetBoundsGeometry.clampAnchor(ns, world.playArea)
+        val centerDrop = PetEngineCeilingCenterDrop.tryDropAtCenter(s, ns, world, vx)
+        if (centerDrop != null) return centerDrop
         val c = PetBoundsGeometry.computeContact(ns, world.playArea)
         if (s.perimeterPatrolEnabled && s.perimeterStage == PerimeterPatrolStage.CeilingWalk && c.ceiling) {
             val minY = PetBoundsGeometry.minAnchorY(world.playArea)
