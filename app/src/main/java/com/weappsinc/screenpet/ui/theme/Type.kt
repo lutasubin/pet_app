@@ -1,34 +1,24 @@
 package com.weappsinc.screenpet.ui.theme
 
 import androidx.compose.material3.Typography
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.sp
 
-// Set of Material typography styles to start with
-val Typography = Typography(
-    bodyLarge = TextStyle(
-        fontFamily = FontFamily.Default,
-        fontWeight = FontWeight.Normal,
-        fontSize = 16.sp,
-        lineHeight = 24.sp,
-        letterSpacing = 0.5.sp
-    )
-    /* Other default text styles to override
-    titleLarge = TextStyle(
-        fontFamily = FontFamily.Default,
-        fontWeight = FontWeight.Normal,
-        fontSize = 22.sp,
-        lineHeight = 28.sp,
-        letterSpacing = 0.sp
-    ),
-    labelSmall = TextStyle(
-        fontFamily = FontFamily.Default,
-        fontWeight = FontWeight.Medium,
-        fontSize = 11.sp,
-        lineHeight = 16.sp,
-        letterSpacing = 0.5.sp
-    )
-    */
+private val DefaultTypography = Typography()
+
+/** Typography Material 3 voi font Nunito cho toan app. */
+val Typography: Typography = Typography(
+    displayLarge = DefaultTypography.displayLarge.copy(fontFamily = NunitoFontFamily),
+    displayMedium = DefaultTypography.displayMedium.copy(fontFamily = NunitoFontFamily),
+    displaySmall = DefaultTypography.displaySmall.copy(fontFamily = NunitoFontFamily),
+    headlineLarge = DefaultTypography.headlineLarge.copy(fontFamily = NunitoFontFamily),
+    headlineMedium = DefaultTypography.headlineMedium.copy(fontFamily = NunitoFontFamily),
+    headlineSmall = DefaultTypography.headlineSmall.copy(fontFamily = NunitoFontFamily),
+    titleLarge = DefaultTypography.titleLarge.copy(fontFamily = NunitoFontFamily),
+    titleMedium = DefaultTypography.titleMedium.copy(fontFamily = NunitoFontFamily),
+    titleSmall = DefaultTypography.titleSmall.copy(fontFamily = NunitoFontFamily),
+    bodyLarge = DefaultTypography.bodyLarge.copy(fontFamily = NunitoFontFamily),
+    bodyMedium = DefaultTypography.bodyMedium.copy(fontFamily = NunitoFontFamily),
+    bodySmall = DefaultTypography.bodySmall.copy(fontFamily = NunitoFontFamily),
+    labelLarge = DefaultTypography.labelLarge.copy(fontFamily = NunitoFontFamily),
+    labelMedium = DefaultTypography.labelMedium.copy(fontFamily = NunitoFontFamily),
+    labelSmall = DefaultTypography.labelSmall.copy(fontFamily = NunitoFontFamily),
 )
