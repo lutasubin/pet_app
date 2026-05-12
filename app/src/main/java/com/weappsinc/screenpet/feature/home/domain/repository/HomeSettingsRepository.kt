@@ -10,4 +10,5 @@ interface HomeSettingsRepository {
     suspend fun setSwarm(enabled: Boolean)
     suspend fun setSlot(slot: Int, characterId: String?)
     suspend fun setUnlockedSlotCount(count: Int)
+    suspend fun setMixRandomPetCount(count: Int)
 }

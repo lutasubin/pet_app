@@ -16,7 +16,9 @@ fun HomeScreen(
     state: HomeUiState,
     onActivateChanged: (Boolean) -> Unit,
     onSwarmChanged: (Boolean) -> Unit,
+    onMixRandomCountSelected: (Int) -> Unit,
     onSlotClick: (Int) -> Unit,
+    onSlotRemove: (Int) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Box(modifier = modifier.fillMaxSize()) {
@@ -38,8 +40,16 @@ fun HomeScreen(
                 onChanged = onSwarmChanged,
             )
             HomeBannerCard()
-            HomeMixHeader()
-            HomeShimejiGrid(slots = state.slots, onSlotClick = onSlotClick)
+            HomeMixHeader(
+                mixRandomPetCount = state.settings.mixRandomPetCount,
+                onMixRandomCountSelected = onMixRandomCountSelected,
+            )
+            HomeShimejiGrid(
+                slots = state.slots,
+                onSlotClick = onSlotClick,
+                onSlotRemove = onSlotRemove,
+                modifier = Modifier.padding(horizontal = 4.dp, vertical = 6.dp),
+            )
         }
     }
 }

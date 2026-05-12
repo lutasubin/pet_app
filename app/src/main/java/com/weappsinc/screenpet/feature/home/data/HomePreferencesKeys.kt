@@ -15,6 +15,7 @@ object HomePreferencesKeys {
     val Activate = booleanPreferencesKey("activate")
     val Swarm = booleanPreferencesKey("swarm")
     val UnlockedSlotCount = intPreferencesKey("unlocked_slot_count")
+    val MixRandomPetCount = intPreferencesKey("mix_random_pet_count")
 
     val SlotKeys: List<androidx.datastore.preferences.core.Preferences.Key<String>> =
         (0 until HomeSettings.SLOT_COUNT).map { stringPreferencesKey("slot_$it") }

@@ -21,6 +21,7 @@ class DataStoreHomeSettingsRepository @Inject constructor(
             swarmEnabled = prefs[HomePreferencesKeys.Swarm] ?: false,
             selectedSlotIds = HomePreferencesKeys.SlotKeys.map { prefs[it] },
             unlockedSlotCount = prefs[HomePreferencesKeys.UnlockedSlotCount] ?: 1,
+            mixRandomPetCount = prefs[HomePreferencesKeys.MixRandomPetCount]?.coerceIn(1, HomeSettings.SLOT_COUNT) ?: 1,
         )
     }
 
@@ -45,5 +46,10 @@ class DataStoreHomeSettingsRepository @Inject constructor(
         dataStore.edit { prefs ->
             prefs[HomePreferencesKeys.UnlockedSlotCount] = safeCount
         }
+    }
+
+    override suspend fun setMixRandomPetCount(count: Int) {
+        val safe = count.coerceIn(1, HomeSettings.SLOT_COUNT)
+        dataStore.edit { it[HomePreferencesKeys.MixRandomPetCount] = safe }
     }
 }

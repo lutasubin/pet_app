@@ -14,13 +14,22 @@
     <string name="home_activate_subtitle">Bat tinh nang de trai nghiem</string>
     <string name="home_swarm_title">Pet Swarm mode</string>
     <string name="home_banner_content_desc">Banner Shimeji</string>
-    <string name="home_mix_title">Mix Shimeji</string>
-    <string name="home_one_at_random">Nhiều pet</string>
+    <string name="home_mix_title">Mix Shimeji Pet</string>
+    <string name="home_mix_random_n">%1$d pet ngẫu nhiên</string>
+    <string name="home_mix_menu_cd">Chọn số pet ngẫu nhiên</string>
+    <string name="home_mix_sheet_close_cd">Đóng</string>
+    <string name="home_mix_sheet_option_1">One at random</string>
+    <string name="home_mix_sheet_option_2">Two at random</string>
+    <string name="home_mix_sheet_option_3">Three at random</string>
+    <string name="home_mix_sheet_option_4">Four at random</string>
+    <string name="home_mix_sheet_option_5">Five at random</string>
+    <string name="home_mix_sheet_option_6">Six at random</string>
     <string name="home_unlock">Unlock</string>
     <string name="home_slot_character_pending">Cần mở khóa trong Shop</string>
-    <string name="home_add_shimeji_cd">Them Shimeji</string>
+    <string name="home_slot_remove_cd">Bỏ Shimeji khỏi ô</string>
     <string name="home_lock_cd">Bi khoa</string>
     <string name="home_thumbnail_cd">Thumbnail Shimeji</string>
+    <string name="home_add_shimeji_cd">Them Shimeji</string>
     <string name="home_picker_title">Chon Shimeji</string>
     <string name="home_picker_close">Dong</string>
 

@@ -2,6 +2,7 @@ package com.weappsinc.screenpet.feature.home.presentation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.weappsinc.screenpet.feature.home.domain.usecase.ApplyRandomShimejiMixUseCase
 import com.weappsinc.screenpet.feature.home.domain.usecase.LoadShimejiCatalogUseCase
 import com.weappsinc.screenpet.feature.home.domain.usecase.ObserveHomeStateUseCase
 import com.weappsinc.screenpet.feature.home.domain.usecase.SelectShimejiAtSlotUseCase
@@ -26,6 +27,7 @@ class HomeViewModel @Inject constructor(
     private val unlockNextSlotUseCase: UnlockNextSlotUseCase,
     private val toggleActivate: ToggleActivateUseCase,
     private val toggleSwarm: ToggleSwarmUseCase,
+    private val applyRandomMix: ApplyRandomShimejiMixUseCase,
     private val overlayController: PetOverlayController,
 ) : ViewModel() {
 
@@ -57,6 +59,12 @@ class HomeViewModel @Inject constructor(
         viewModelScope.launch { toggleSwarm(enabled) }
     }
 
+    fun onMixRandomCountSelected(count: Int) {
+        viewModelScope.launch {
+            applyRandomMix(_uiState.value.catalog, count)
+        }
+    }
+
     fun onSlotTapped(slot: Int) {
         val slotModel = _uiState.value.slots.getOrNull(slot) ?: return
         if (slotModel is HomeSlotUiModel.SlotLocked) {
@@ -65,6 +73,10 @@ class HomeViewModel @Inject constructor(
         }
         if (slotModel is HomeSlotUiModel.CharacterLocked) return
         _uiState.update { it.copy(pickerOpenForSlot = slot) }
+    }
+
+    fun onSlotRemove(slot: Int) {
+        viewModelScope.launch { selectSlot(slot, null) }
     }
 
     fun onPickerDismiss() {

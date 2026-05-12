@@ -24,7 +24,9 @@ fun HomeRoute(
         state = state,
         onActivateChanged = onActivate,
         onSwarmChanged = viewModel::onSwarmChanged,
+        onMixRandomCountSelected = viewModel::onMixRandomCountSelected,
         onSlotClick = viewModel::onSlotTapped,
+        onSlotRemove = viewModel::onSlotRemove,
         modifier = modifier,
     )
     val pickerSlot = state.pickerOpenForSlot

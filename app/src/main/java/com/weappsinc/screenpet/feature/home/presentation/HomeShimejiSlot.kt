@@ -1,98 +1,99 @@
 package com.weappsinc.screenpet.feature.home.presentation
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.annotation.StringRes
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.weappsinc.screenpet.R
-import com.weappsinc.screenpet.core.constants.HomeAssetPaths
 import com.weappsinc.screenpet.ui.theme.HomeTokens
 
 @Composable
 fun HomeShimejiSlot(
     model: HomeSlotUiModel,
     onClick: () -> Unit,
+    onRemove: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Box(
         modifier = modifier
             .aspectRatio(1f)
-            .clip(HomeShimejiSlotShape)
-            .homeShimejiSlotDecoration(model)
-            .clickable(onClick = onClick),
-        contentAlignment = Alignment.Center,
+            .homeShimejiSlotSurface(model),
     ) {
         when (model) {
-            is HomeSlotUiModel.Empty -> EmptySlotContent()
-            is HomeSlotUiModel.Picked -> AssetImage(
+            is HomeSlotUiModel.Empty ->
+                Box(Modifier.fillMaxSize().clickable(onClick = onClick), contentAlignment = Alignment.Center) {
+                    HomeEmptyAddSlotContent()
+                }
+            is HomeSlotUiModel.Picked ->
+                PickedSlotContent(model = model, onClick = onClick, onRemove = onRemove)
+            is HomeSlotUiModel.CharacterLocked ->
+                Box(Modifier.fillMaxSize().clickable(onClick = onClick), contentAlignment = Alignment.Center) {
+                    HomeUnlockSlotContent(R.string.home_slot_character_pending)
+                }
+            is HomeSlotUiModel.SlotLocked ->
+                Box(Modifier.fillMaxSize().clickable(onClick = onClick), contentAlignment = Alignment.Center) {
+                    HomeUnlockSlotContent(R.string.home_unlock)
+                }
+        }
+    }
+}
+
+@Composable
+private fun PickedSlotContent(
+    model: HomeSlotUiModel.Picked,
+    onClick: () -> Unit,
+    onRemove: () -> Unit,
+) {
+    Box(Modifier.fillMaxSize()) {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(start = 8.dp, top = 8.dp, end = 8.dp, bottom = 10.dp)
+                .clickable(onClick = onClick),
+            horizontalAlignment = Alignment.CenterHorizontally,
+        ) {
+            AssetImage(
                 assetRelativePath = model.thumbnailAssetPath,
                 contentDescription = stringResource(R.string.home_thumbnail_cd),
-                modifier = Modifier.fillMaxSize().padding(8.dp),
+                modifier = Modifier
+                    .weight(1f)
+                    .fillMaxWidth()
+                    .padding(horizontal = 4.dp, vertical = 4.dp),
             )
-            is HomeSlotUiModel.CharacterLocked -> LockedSlotContent(R.string.home_slot_character_pending)
-            is HomeSlotUiModel.SlotLocked -> LockedSlotContent(R.string.home_unlock)
+            Text(
+                text = abbreviateSlotPetDisplayName(model.name),
+                style = MaterialTheme.typography.titleSmall,
+                fontWeight = FontWeight.Bold,
+                color = Color(0xFF1B2740),
+                maxLines = 2,
+                modifier = Modifier.padding(top = 4.dp),
+            )
         }
-    }
-}
-
-@Composable
-private fun EmptySlotContent() {
-    Box(
-        modifier = Modifier
-            .size(52.dp)
-            .clip(CircleShape)
-            .background(HomeTokens.SlotEmptyCircleFill),
-        contentAlignment = Alignment.Center,
-    ) {
         Icon(
-            Icons.Filled.Add,
-            contentDescription = stringResource(R.string.home_add_shimeji_cd),
-            tint = HomeTokens.NavActive,
-            modifier = Modifier.size(28.dp),
-        )
-    }
-}
-
-@Composable
-private fun LockedSlotContent(@StringRes labelRes: Int) {
-    Column(horizontalAlignment = Alignment.CenterHorizontally) {
-        Box(
-            modifier = Modifier.size(46.dp).clip(CircleShape).background(Color.White),
-            contentAlignment = Alignment.Center,
-        ) {
-            SvgAssetIcon(
-                assetRelativePath = HomeAssetPaths.UNLOCK_ICON_RELATIVE,
-                contentDescription = stringResource(R.string.home_lock_cd),
-                modifier = Modifier.size(22.dp),
-                tint = HomeTokens.LockIcon,
-            )
-        }
-        Text(
-            text = stringResource(labelRes),
-            style = MaterialTheme.typography.labelMedium.copy(
-                fontWeight = FontWeight.Medium,
-                color = HomeTokens.SlotLockedLabel,
-            ),
-            modifier = Modifier.padding(top = 8.dp),
+            imageVector = Icons.Filled.Delete,
+            contentDescription = stringResource(R.string.home_slot_remove_cd),
+            tint = HomeTokens.SwitchCheckedTrack,
+            modifier = Modifier
+                .align(Alignment.TopEnd)
+                .padding(6.dp)
+                .size(26.dp)
+                .clickable(onClick = onRemove),
         )
     }
 }

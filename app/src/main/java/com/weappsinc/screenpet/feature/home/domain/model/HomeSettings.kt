@@ -6,6 +6,8 @@ data class HomeSettings(
     val swarmEnabled: Boolean = false,
     val selectedSlotIds: List<String?> = List(SLOT_COUNT) { null },
     val unlockedSlotCount: Int = 1,
+    /** 1..6: hien thi tren Mix Shimeji (so pet random mong muon). */
+    val mixRandomPetCount: Int = 1,
 ) {
     init {
         require(selectedSlotIds.size == SLOT_COUNT) {
@@ -13,6 +15,9 @@ data class HomeSettings(
         }
         require(unlockedSlotCount in 1..SLOT_COUNT) {
             "unlockedSlotCount phai trong 1..$SLOT_COUNT"
+        }
+        require(mixRandomPetCount in 1..SLOT_COUNT) {
+            "mixRandomPetCount phai trong 1..$SLOT_COUNT"
         }
     }
 

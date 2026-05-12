@@ -12,6 +12,7 @@ import androidx.compose.ui.unit.dp
 fun HomeShimejiGrid(
     slots: List<HomeSlotUiModel>,
     onSlotClick: (Int) -> Unit,
+    onSlotRemove: (Int) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Column(
@@ -28,6 +29,7 @@ fun HomeShimejiGrid(
                     HomeShimejiSlot(
                         model = model,
                         onClick = { onSlotClick(globalIdx) },
+                        onRemove = { onSlotRemove(globalIdx) },
                         modifier = Modifier.weight(1f),
                     )
                 }
