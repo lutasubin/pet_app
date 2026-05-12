@@ -11,6 +11,62 @@ internal object PetEngineWallPhysics {
         if (s.phase != PetRuntimePhase.Airborne) return s
         val clamped = PetBoundsGeometry.clampAnchor(s, world.playArea)
         val c = PetBoundsGeometry.computeContact(clamped, world.playArea)
+        if (s.perimeterPatrolEnabled && s.perimeterStage == PerimeterPatrolStage.AirCrossDescendAfterFirstThird) {
+            if (c.wallLeft && s.velocityXPxPerSec < -40f) {
+                return clamped.copy(
+                    phase = PetRuntimePhase.WallLeft,
+                    clipId = ShimejiClipId.GrabWall,
+                    velocityXPxPerSec = 0f,
+                    velocityYPxPerSec = 0f,
+                    anchorXPx = PetBoundsGeometry.minAnchorX(world.playArea),
+                    wallDescend = true,
+                    perimeterStage = PerimeterPatrolStage.DescendSecondThird,
+                    frameIndex = 0,
+                    msAccumulatedInFrame = 0f,
+                )
+            }
+            if (c.wallRight && s.velocityXPxPerSec > 40f) {
+                return clamped.copy(
+                    phase = PetRuntimePhase.WallRight,
+                    clipId = ShimejiClipId.GrabWall,
+                    velocityXPxPerSec = 0f,
+                    velocityYPxPerSec = 0f,
+                    anchorXPx = PetBoundsGeometry.maxAnchorX(world.playArea),
+                    wallDescend = true,
+                    perimeterStage = PerimeterPatrolStage.DescendSecondThird,
+                    frameIndex = 0,
+                    msAccumulatedInFrame = 0f,
+                )
+            }
+        }
+        if (s.perimeterPatrolEnabled && s.perimeterStage == PerimeterPatrolStage.AirCrossDescendAfterSecondThird) {
+            if (c.wallRight && s.velocityXPxPerSec > 40f) {
+                return clamped.copy(
+                    phase = PetRuntimePhase.WallRight,
+                    clipId = ShimejiClipId.GrabWall,
+                    velocityXPxPerSec = 0f,
+                    velocityYPxPerSec = 0f,
+                    anchorXPx = PetBoundsGeometry.maxAnchorX(world.playArea),
+                    wallDescend = true,
+                    perimeterStage = PerimeterPatrolStage.DescendToFloor,
+                    frameIndex = 0,
+                    msAccumulatedInFrame = 0f,
+                )
+            }
+            if (c.wallLeft && s.velocityXPxPerSec < -40f) {
+                return clamped.copy(
+                    phase = PetRuntimePhase.WallLeft,
+                    clipId = ShimejiClipId.GrabWall,
+                    velocityXPxPerSec = 0f,
+                    velocityYPxPerSec = 0f,
+                    anchorXPx = PetBoundsGeometry.minAnchorX(world.playArea),
+                    wallDescend = true,
+                    perimeterStage = PerimeterPatrolStage.DescendToFloor,
+                    frameIndex = 0,
+                    msAccumulatedInFrame = 0f,
+                )
+            }
+        }
         if (s.perimeterPatrolEnabled && s.perimeterStage == PerimeterPatrolStage.AirCrossAfterFirstThird) {
             if (c.wallLeft && s.velocityXPxPerSec < -40f) {
                 return clamped.copy(
@@ -116,6 +172,7 @@ internal object PetEngineWallPhysics {
                     velocityYPxPerSec = 0f,
                     anchorXPx = minX,
                     anchorYPx = minY,
+                    perimeterStage = PerimeterPatrolStage.DescendFirstThird,
                     frameIndex = 0,
                     msAccumulatedInFrame = 0f,
                 )
@@ -129,6 +186,7 @@ internal object PetEngineWallPhysics {
                     velocityYPxPerSec = 0f,
                     anchorXPx = maxX,
                     anchorYPx = minY,
+                    perimeterStage = PerimeterPatrolStage.DescendFirstThird,
                     frameIndex = 0,
                     msAccumulatedInFrame = 0f,
                 )

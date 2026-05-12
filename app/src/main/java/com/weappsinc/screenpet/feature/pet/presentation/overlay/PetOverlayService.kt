@@ -10,7 +10,7 @@ import android.view.WindowManager
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import com.weappsinc.screenpet.core.constants.PetOverlayContract
-import com.weappsinc.screenpet.feature.pet.domain.model.PetPlayArea
+import com.weappsinc.screenpet.core.util.PetPlayAreaFromWindow
 import com.weappsinc.screenpet.feature.pet.domain.repository.PetArenaRepository
 import com.weappsinc.screenpet.feature.pet.domain.usecase.DispatchArenaInputUseCase
 import com.weappsinc.screenpet.feature.pet.domain.usecase.TickArenaUseCase
@@ -54,7 +54,8 @@ class PetOverlayService : Service() {
             return
         }
         overlaySession.setActive(true)
-        scope.launch { updateArenaPlayAreaUseCase(PetPlayArea(screenWidthPx(), screenHeightPx())) }
+        val wm = getSystemService(WINDOW_SERVICE) as WindowManager
+        scope.launch { updateArenaPlayAreaUseCase(PetPlayAreaFromWindow.resolve(wm)) }
         manager = PetArenaOverlayHostManager(
             service = this,
             scope = scope,
@@ -107,16 +108,6 @@ class PetOverlayService : Service() {
 
     private fun toast(msg: String) {
         Toast.makeText(this, msg, Toast.LENGTH_SHORT).show()
-    }
-
-    private fun screenWidthPx(): Int {
-        val wm = getSystemService(WINDOW_SERVICE) as WindowManager
-        return wm.currentWindowMetrics.bounds.width()
-    }
-
-    private fun screenHeightPx(): Int {
-        val wm = getSystemService(WINDOW_SERVICE) as WindowManager
-        return wm.currentWindowMetrics.bounds.height()
     }
 
     companion object {

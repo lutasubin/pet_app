@@ -2,18 +2,25 @@ package com.weappsinc.screenpet.feature.pet.domain.engine
 
 import com.weappsinc.screenpet.core.constants.PetPhysicsConstants
 import com.weappsinc.screenpet.core.constants.PetSpriteAnchor
+import com.weappsinc.screenpet.core.constants.PetSpriteVisualBleed
 import com.weappsinc.screenpet.feature.pet.domain.model.PetBorderContact
 import com.weappsinc.screenpet.feature.pet.domain.model.PetPlayArea
 import com.weappsinc.screenpet.feature.pet.domain.model.PetSnapshot
 import kotlin.math.hypot
 
 object PetBoundsGeometry {
-    fun minAnchorX(area: PetPlayArea): Float = PetSpriteAnchor.ANCHOR_X_IN_SPRITE.toFloat()
-    fun maxAnchorX(area: PetPlayArea): Float =
-        area.widthPx - (PetSpriteAnchor.SPRITE_WIDTH_PX - PetSpriteAnchor.ANCHOR_X_IN_SPRITE).toFloat()
+    fun minAnchorX(area: PetPlayArea): Float =
+        (PetSpriteAnchor.ANCHOR_X_IN_SPRITE - PetSpriteVisualBleed.INTO_EDGE_LEFT_PX).toFloat()
 
-    fun minAnchorY(area: PetPlayArea): Float = PetSpriteAnchor.ANCHOR_Y_IN_SPRITE.toFloat()
-    fun maxAnchorY(area: PetPlayArea): Float = area.heightPx.toFloat()
+    fun maxAnchorX(area: PetPlayArea): Float =
+        area.widthPx - (PetSpriteAnchor.SPRITE_WIDTH_PX - PetSpriteAnchor.ANCHOR_X_IN_SPRITE).toFloat() +
+            PetSpriteVisualBleed.INTO_EDGE_RIGHT_PX.toFloat()
+
+    fun minAnchorY(area: PetPlayArea): Float =
+        (PetSpriteAnchor.ANCHOR_Y_IN_SPRITE - PetSpriteVisualBleed.INTO_EDGE_TOP_PX).toFloat()
+
+    fun maxAnchorY(area: PetPlayArea): Float =
+        area.heightPx.toFloat() + PetSpriteVisualBleed.INTO_EDGE_BOTTOM_PX.toFloat()
 
     fun clampAnchor(s: PetSnapshot, area: PetPlayArea): PetSnapshot {
         val nx = s.anchorXPx.coerceIn(minAnchorX(area), maxAnchorX(area))

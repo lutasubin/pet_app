@@ -35,8 +35,9 @@ Khi `detach`: `removeView` -> `disposeComposition` -> `ON_PAUSE/STOP/DESTROY` ->
 - Sync position chay tren `Dispatchers.Main.immediate`; `try/catch` + `Log.e("PetOverlay", ...)` quanh `addView/updateViewLayout`.
 
 ## Play area cho engine
-Goi `updatePlayAreaUseCase(PetPlayArea(w, h))` voi `w/h = wm.currentWindowMetrics.bounds.width()/height()`
-NGAY truoc khi attach window, de pet biet bo tuong = mep man hinh that.
+Goi `updateArenaPlayAreaUseCase(PetPlayAreaFromWindow.resolve(wm))` voi `wm` tu `WINDOW_SERVICE`
+(`getMaximumWindowMetrics().bounds` — sat bien hon `currentWindowMetrics.bounds`) NGAY truoc khi attach window,
+de pet biet bo tuong = vung hien thi lon nhat.
 
 ## Multi-window (Pet Swarm)
 - SSOT cho swarm: `PetArenaRepository.arena: StateFlow<PetArenaState>`.

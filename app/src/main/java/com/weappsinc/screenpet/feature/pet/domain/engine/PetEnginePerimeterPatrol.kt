@@ -7,7 +7,7 @@ import com.weappsinc.screenpet.feature.pet.domain.model.PetRuntimePhase
 import com.weappsinc.screenpet.feature.pet.domain.model.PetSnapshot
 import com.weappsinc.screenpet.feature.pet.domain.model.PetWorldState
 
-/** Logic bam vien: goc day -> leo 1/3 -> nhay sang tuong doi dien -> lap -> tran -> xuong. */
+/** Logic bam vien: leo 1/3 + nhay (len) / tran / xuong 1/3 + nhay (xuong) doi xung. */
 internal object PetEnginePerimeterPatrol {
     private const val HOP_DURATION_SEC: Float = 0.48f
 
@@ -62,6 +62,20 @@ internal object PetEnginePerimeterPatrol {
         val minY = PetBoundsGeometry.minAnchorY(world.playArea)
         val h = (maxY - minY).coerceAtLeast(90f)
         return maxY - 2f * h / 3f
+    }
+
+    fun firstDescendThirdThresholdY(world: PetWorldState): Float {
+        val maxY = PetBoundsGeometry.maxAnchorY(world.playArea)
+        val minY = PetBoundsGeometry.minAnchorY(world.playArea)
+        val h = (maxY - minY).coerceAtLeast(90f)
+        return minY + h / 3f
+    }
+
+    fun secondDescendThirdThresholdY(world: PetWorldState): Float {
+        val maxY = PetBoundsGeometry.maxAnchorY(world.playArea)
+        val minY = PetBoundsGeometry.minAnchorY(world.playArea)
+        val h = (maxY - minY).coerceAtLeast(90f)
+        return minY + 2f * h / 3f
     }
 
     fun enterCeilingFromWall(s: PetSnapshot, world: PetWorldState): PetSnapshot {

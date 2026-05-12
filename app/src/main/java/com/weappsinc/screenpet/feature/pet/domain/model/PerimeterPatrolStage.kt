@@ -9,4 +9,10 @@ enum class PerimeterPatrolStage {
     AirCrossAfterSecondThird,
     AscendToTop,
     CeilingWalk,
+    /** Bò tuong xuong: 1/3 -> nhay -> 1/3 -> nhay -> ve san. */
+    DescendFirstThird,
+    AirCrossDescendAfterFirstThird,
+    DescendSecondThird,
+    AirCrossDescendAfterSecondThird,
+    DescendToFloor,
 }

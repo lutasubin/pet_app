@@ -2,6 +2,7 @@ package com.weappsinc.screenpet.feature.pet.domain.engine
 
 import com.weappsinc.screenpet.core.constants.PetGestureConstants
 import com.weappsinc.screenpet.core.constants.ShimejiClipId
+import com.weappsinc.screenpet.feature.pet.domain.model.PerimeterPatrolStage
 import com.weappsinc.screenpet.feature.pet.domain.model.PetPlayArea
 import com.weappsinc.screenpet.feature.pet.domain.model.PetRuntimePhase
 import com.weappsinc.screenpet.feature.pet.domain.model.PetSnapshot
@@ -51,6 +52,11 @@ internal object PetEngineTopEdgeWallDragRelease {
                 velocityYPxPerSec = 0f,
                 frameIndex = 0,
                 msAccumulatedInFrame = 0f,
+                perimeterStage = if (s.perimeterPatrolEnabled) {
+                    PerimeterPatrolStage.DescendFirstThird
+                } else {
+                    s.perimeterStage
+                },
             ),
             area,
         )

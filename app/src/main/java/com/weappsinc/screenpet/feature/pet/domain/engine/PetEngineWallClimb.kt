@@ -56,6 +56,37 @@ internal object PetEngineWallClimb {
             }
         }
 
+        if (s.perimeterPatrolEnabled && s.wallDescend) {
+            when (s.perimeterStage) {
+                PerimeterPatrolStage.DescendFirstThird -> {
+                    val y1 = PetEnginePerimeterPatrol.firstDescendThirdThresholdY(world)
+                    if (ns.anchorYPx >= y1) {
+                        val towardLeft = s.phase == PetRuntimePhase.WallRight
+                        return PetEnginePerimeterPatrol.startCrossJump(
+                            ns,
+                            world,
+                            towardLeft = towardLeft,
+                            nextStage = PerimeterPatrolStage.AirCrossDescendAfterFirstThird,
+                        )
+                    }
+                }
+                PerimeterPatrolStage.DescendSecondThird -> {
+                    val y2 = PetEnginePerimeterPatrol.secondDescendThirdThresholdY(world)
+                    if (ns.anchorYPx >= y2) {
+                        val towardLeft = s.phase == PetRuntimePhase.WallRight
+                        return PetEnginePerimeterPatrol.startCrossJump(
+                            ns,
+                            world,
+                            towardLeft = towardLeft,
+                            nextStage = PerimeterPatrolStage.AirCrossDescendAfterSecondThird,
+                        )
+                    }
+                }
+                PerimeterPatrolStage.DescendToFloor -> { }
+                else -> { }
+            }
+        }
+
         if (!s.wallDescend && c.ceiling) {
             if (s.perimeterPatrolEnabled && s.perimeterStage == PerimeterPatrolStage.AscendToTop) {
                 return PetEnginePerimeterPatrol.enterCeilingFromWall(ns, world)
@@ -76,27 +107,32 @@ internal object PetEngineWallClimb {
         }
 
         if (s.wallDescend && (c.floor || ns.anchorYPx >= maxY - 1f)) {
-            val walkRight = s.phase == PetRuntimePhase.WallLeft
-            val vx = if (walkRight) {
-                PetPhysicsConstants.WALK_SPEED_PX_PER_SEC
-            } else {
-                -PetPhysicsConstants.WALK_SPEED_PX_PER_SEC
+            val allowFloorSnap =
+                !s.perimeterPatrolEnabled ||
+                    s.perimeterStage == PerimeterPatrolStage.DescendToFloor
+            if (allowFloorSnap) {
+                val walkRight = s.phase == PetRuntimePhase.WallLeft
+                val vx = if (walkRight) {
+                    PetPhysicsConstants.WALK_SPEED_PX_PER_SEC
+                } else {
+                    -PetPhysicsConstants.WALK_SPEED_PX_PER_SEC
+                }
+                return PetBoundsGeometry.clampAnchor(
+                    ns.copy(
+                        phase = PetRuntimePhase.GroundMoving,
+                        clipId = ShimejiClipId.Walk,
+                        anchorYPx = maxY,
+                        lookRight = walkRight,
+                        velocityXPxPerSec = vx,
+                        velocityYPxPerSec = 0f,
+                        wallDescend = false,
+                        perimeterStage = PerimeterPatrolStage.BottomWalk,
+                        frameIndex = 0,
+                        msAccumulatedInFrame = 0f,
+                    ),
+                    world.playArea,
+                )
             }
-            return PetBoundsGeometry.clampAnchor(
-                ns.copy(
-                    phase = PetRuntimePhase.GroundMoving,
-                    clipId = ShimejiClipId.Walk,
-                    anchorYPx = maxY,
-                    lookRight = walkRight,
-                    velocityXPxPerSec = vx,
-                    velocityYPxPerSec = 0f,
-                    wallDescend = false,
-                    perimeterStage = PerimeterPatrolStage.BottomWalk,
-                    frameIndex = 0,
-                    msAccumulatedInFrame = 0f,
-                ),
-                world.playArea,
-            )
         }
 
         if (!c.wallLeft && !c.wallRight) {

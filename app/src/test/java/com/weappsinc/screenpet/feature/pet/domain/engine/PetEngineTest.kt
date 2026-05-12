@@ -65,7 +65,7 @@ class PetEngineTest {
                 cur.snapshot.phase == PetRuntimePhase.GroundIdle ||
                 cur.snapshot.phase == PetRuntimePhase.Bouncing,
         )
-        assertTrue(cur.snapshot.anchorYPx <= area.heightPx.toFloat() + 1f)
+        assertTrue(cur.snapshot.anchorYPx <= PetBoundsGeometry.maxAnchorY(area) + 1f)
     }
 
     @Test

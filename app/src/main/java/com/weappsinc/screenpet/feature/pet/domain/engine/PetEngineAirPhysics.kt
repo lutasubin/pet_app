@@ -32,6 +32,72 @@ internal object PetEngineAirPhysics {
         if (s.anchorYPx >= maxY - 1f && s.velocityYPxPerSec >= 0f) {
             if (s.perimeterPatrolEnabled) {
                 when (s.perimeterStage) {
+                    PerimeterPatrolStage.AirCrossDescendAfterFirstThird -> {
+                        val toLeft = s.velocityXPxPerSec < 0f
+                        val minX = PetBoundsGeometry.minAnchorX(world.playArea)
+                        val maxX = PetBoundsGeometry.maxAnchorX(world.playArea)
+                        val rec = if (toLeft) {
+                            s.copy(
+                                anchorYPx = maxY,
+                                anchorXPx = minX,
+                                phase = PetRuntimePhase.WallLeft,
+                                clipId = ShimejiClipId.GrabWall,
+                                velocityXPxPerSec = 0f,
+                                velocityYPxPerSec = 0f,
+                                wallDescend = true,
+                                perimeterStage = PerimeterPatrolStage.DescendSecondThird,
+                                frameIndex = 0,
+                                msAccumulatedInFrame = 0f,
+                            )
+                        } else {
+                            s.copy(
+                                anchorYPx = maxY,
+                                anchorXPx = maxX,
+                                phase = PetRuntimePhase.WallRight,
+                                clipId = ShimejiClipId.GrabWall,
+                                velocityXPxPerSec = 0f,
+                                velocityYPxPerSec = 0f,
+                                wallDescend = true,
+                                perimeterStage = PerimeterPatrolStage.DescendSecondThird,
+                                frameIndex = 0,
+                                msAccumulatedInFrame = 0f,
+                            )
+                        }
+                        return PetBoundsGeometry.clampAnchor(rec, world.playArea)
+                    }
+                    PerimeterPatrolStage.AirCrossDescendAfterSecondThird -> {
+                        val toLeft = s.velocityXPxPerSec < 0f
+                        val minX = PetBoundsGeometry.minAnchorX(world.playArea)
+                        val maxX = PetBoundsGeometry.maxAnchorX(world.playArea)
+                        val rec = if (toLeft) {
+                            s.copy(
+                                anchorYPx = maxY,
+                                anchorXPx = minX,
+                                phase = PetRuntimePhase.WallLeft,
+                                clipId = ShimejiClipId.GrabWall,
+                                velocityXPxPerSec = 0f,
+                                velocityYPxPerSec = 0f,
+                                wallDescend = true,
+                                perimeterStage = PerimeterPatrolStage.DescendToFloor,
+                                frameIndex = 0,
+                                msAccumulatedInFrame = 0f,
+                            )
+                        } else {
+                            s.copy(
+                                anchorYPx = maxY,
+                                anchorXPx = maxX,
+                                phase = PetRuntimePhase.WallRight,
+                                clipId = ShimejiClipId.GrabWall,
+                                velocityXPxPerSec = 0f,
+                                velocityYPxPerSec = 0f,
+                                wallDescend = true,
+                                perimeterStage = PerimeterPatrolStage.DescendToFloor,
+                                frameIndex = 0,
+                                msAccumulatedInFrame = 0f,
+                            )
+                        }
+                        return PetBoundsGeometry.clampAnchor(rec, world.playArea)
+                    }
                     PerimeterPatrolStage.AirCrossAfterFirstThird -> {
                         val toLeft = s.velocityXPxPerSec < 0f
                         val minX = PetBoundsGeometry.minAnchorX(world.playArea)
