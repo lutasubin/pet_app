@@ -73,6 +73,16 @@ class PetViewModel @Inject constructor(
         }
     }
 
+    /** Man Shop preview: engine di san + tuong tu overlay, khong chay playlist demo. */
+    fun startShopPreviewLiveMode() {
+        viewModelScope.launch {
+            if (overlaySession.active.value) return@launch
+            stopAllDemosInternal()
+            showcasePetClipUseCase.forceResumeGroundPatrol()
+            startSimulationLoop()
+        }
+    }
+
     /** Demo hanh dong: lap lai playlist clip (gom nhieu frame trong 46 anh), khong quet shime1..46. */
     fun startDemoActionPlaylist() {
         viewModelScope.launch {
