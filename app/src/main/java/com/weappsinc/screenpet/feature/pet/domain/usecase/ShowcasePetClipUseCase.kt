@@ -3,6 +3,7 @@ package com.weappsinc.screenpet.feature.pet.domain.usecase
 import com.weappsinc.screenpet.core.constants.PetPhysicsConstants
 import com.weappsinc.screenpet.core.constants.ShimejiClipId
 import com.weappsinc.screenpet.feature.pet.domain.engine.PetBoundsGeometry
+import com.weappsinc.screenpet.feature.pet.domain.model.PerimeterPatrolStage
 import com.weappsinc.screenpet.feature.pet.domain.model.PetRuntimePhase
 import com.weappsinc.screenpet.feature.pet.domain.repository.PetSimulationRepository
 import com.weappsinc.screenpet.feature.pet.domain.sync.PetSimulationUpdateMutex
@@ -31,6 +32,8 @@ class ShowcasePetClipUseCase @Inject constructor(
             isDragging = false,
             bouncePhaseRemainingMs = 0L,
             wallDescend = false,
+            perimeterPatrolEnabled = false,
+            perimeterStage = PerimeterPatrolStage.BottomWalk,
         )
         s = PetBoundsGeometry.clampAnchor(s, area)
         repository.replace(
@@ -60,6 +63,8 @@ class ShowcasePetClipUseCase @Inject constructor(
             frameIndex = 0,
             msAccumulatedInFrame = 0f,
             wallDescend = false,
+            perimeterPatrolEnabled = true,
+            perimeterStage = PerimeterPatrolStage.BottomWalk,
         )
         ns = PetBoundsGeometry.clampAnchor(ns, world.playArea)
         repository.replace(

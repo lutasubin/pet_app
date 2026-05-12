@@ -34,6 +34,7 @@ class PetEngineWallClimbTest {
             dragGrabOffsetYPx = 0f,
             bouncePhaseRemainingMs = 0L,
             wallDescend = true,
+            perimeterPatrolEnabled = false,
         )
         var w = PetWorldState(area, PetBoundsGeometry.clampAnchor(snap, area))
         repeat(400) {

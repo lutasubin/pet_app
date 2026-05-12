@@ -2,6 +2,7 @@ package com.weappsinc.screenpet.feature.pet.domain.engine
 
 import com.weappsinc.screenpet.core.constants.PetPhysicsConstants
 import com.weappsinc.screenpet.core.constants.ShimejiClipId
+import com.weappsinc.screenpet.feature.pet.domain.model.PerimeterPatrolStage
 import com.weappsinc.screenpet.feature.pet.domain.model.PetRuntimePhase
 import com.weappsinc.screenpet.feature.pet.domain.model.PetSnapshot
 import com.weappsinc.screenpet.feature.pet.domain.model.PetWorldState
@@ -94,6 +95,11 @@ internal object PetEnginePhysics {
                 frameIndex = 0,
                 msAccumulatedInFrame = 0f,
                 wallDescend = false,
+                perimeterStage = if (ns.perimeterPatrolEnabled) {
+                    PerimeterPatrolStage.BottomWalk
+                } else {
+                    ns.perimeterStage
+                },
             )
         } else {
             ns.copy(bouncePhaseRemainingMs = left)
@@ -103,6 +109,14 @@ internal object PetEnginePhysics {
     private fun reflectWallIfNeeded(s: PetSnapshot, world: PetWorldState): PetSnapshot {
         val c = PetBoundsGeometry.computeContact(PetBoundsGeometry.clampAnchor(s, world.playArea), world.playArea)
         var ns = s
+        if (ns.perimeterPatrolEnabled && ns.perimeterStage == PerimeterPatrolStage.BottomWalk) {
+            if (c.wallRight && ns.velocityXPxPerSec > 0f) {
+                return PetEnginePerimeterPatrol.attachWallFromFloorCorner(ns, world, wallIsRight = true)
+            }
+            if (c.wallLeft && ns.velocityXPxPerSec < 0f) {
+                return PetEnginePerimeterPatrol.attachWallFromFloorCorner(ns, world, wallIsRight = false)
+            }
+        }
         if (c.wallLeft && ns.velocityXPxPerSec < 0f) {
             ns = ns.copy(lookRight = true, velocityXPxPerSec = PetPhysicsConstants.WALK_SPEED_PX_PER_SEC)
         }

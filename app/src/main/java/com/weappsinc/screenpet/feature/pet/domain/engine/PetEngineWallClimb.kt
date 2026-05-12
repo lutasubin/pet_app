@@ -2,6 +2,7 @@ package com.weappsinc.screenpet.feature.pet.domain.engine
 
 import com.weappsinc.screenpet.core.constants.PetPhysicsConstants
 import com.weappsinc.screenpet.core.constants.ShimejiClipId
+import com.weappsinc.screenpet.feature.pet.domain.model.PerimeterPatrolStage
 import com.weappsinc.screenpet.feature.pet.domain.model.PetRuntimePhase
 import com.weappsinc.screenpet.feature.pet.domain.model.PetSnapshot
 import com.weappsinc.screenpet.feature.pet.domain.model.PetWorldState
@@ -24,7 +25,41 @@ internal object PetEngineWallClimb {
         ns = PetBoundsGeometry.clampAnchor(ns, world.playArea)
         val c = PetBoundsGeometry.computeContact(ns, world.playArea)
 
+        if (s.perimeterPatrolEnabled && !s.wallDescend) {
+            when (s.perimeterStage) {
+                PerimeterPatrolStage.AscendFirstThird -> {
+                    val y1 = PetEnginePerimeterPatrol.firstThirdTargetY(world)
+                    if (ns.anchorYPx <= y1) {
+                        val towardLeft = s.phase == PetRuntimePhase.WallRight
+                        return PetEnginePerimeterPatrol.startCrossJump(
+                            ns,
+                            world,
+                            towardLeft = towardLeft,
+                            nextStage = PerimeterPatrolStage.AirCrossAfterFirstThird,
+                        )
+                    }
+                }
+                PerimeterPatrolStage.AscendSecondThird -> {
+                    val y2 = PetEnginePerimeterPatrol.secondThirdTargetY(world)
+                    if (ns.anchorYPx <= y2) {
+                        val towardLeft = s.phase == PetRuntimePhase.WallRight
+                        return PetEnginePerimeterPatrol.startCrossJump(
+                            ns,
+                            world,
+                            towardLeft = towardLeft,
+                            nextStage = PerimeterPatrolStage.AirCrossAfterSecondThird,
+                        )
+                    }
+                }
+                PerimeterPatrolStage.AscendToTop -> { }
+                else -> { }
+            }
+        }
+
         if (!s.wallDescend && c.ceiling) {
+            if (s.perimeterPatrolEnabled && s.perimeterStage == PerimeterPatrolStage.AscendToTop) {
+                return PetEnginePerimeterPatrol.enterCeilingFromWall(ns, world)
+            }
             return PetBoundsGeometry.clampAnchor(
                 ns.copy(
                     phase = PetRuntimePhase.GroundIdle,
@@ -56,6 +91,7 @@ internal object PetEngineWallClimb {
                     velocityXPxPerSec = vx,
                     velocityYPxPerSec = 0f,
                     wallDescend = false,
+                    perimeterStage = PerimeterPatrolStage.BottomWalk,
                     frameIndex = 0,
                     msAccumulatedInFrame = 0f,
                 ),

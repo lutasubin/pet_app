@@ -25,6 +25,7 @@ class PetEngineTest {
             frameIndex = 0,
             msAccumulatedInFrame = 0f,
             contact = PetBorderContact(floor = true),
+            perimeterPatrolEnabled = false,
         )
         var cur = PetWorldState(area, walking)
         val clipLen = ShimejiFrameCatalog.clip(ShimejiClipId.Walk).frameIndices.size
@@ -53,6 +54,7 @@ class PetEngineTest {
             dragGrabOffsetXPx = 0f,
             dragGrabOffsetYPx = 0f,
             bouncePhaseRemainingMs = 0L,
+            perimeterPatrolEnabled = false,
         )
         var cur = PetWorldState(area, snap)
         repeat(400) {

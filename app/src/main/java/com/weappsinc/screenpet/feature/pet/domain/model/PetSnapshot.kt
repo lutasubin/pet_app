@@ -22,4 +22,7 @@ data class PetSnapshot(
     val bouncePhaseRemainingMs: Long,
     /** True: dang bò tuong xuong san (tu mép trên keo ra mép). */
     val wallDescend: Boolean = false,
+    /** Bat vong lap bam vien (day -> leo 1/3 -> nhay tuong -> ... -> tran -> xuong). */
+    val perimeterPatrolEnabled: Boolean = true,
+    val perimeterStage: PerimeterPatrolStage = PerimeterPatrolStage.BottomWalk,
 )
