@@ -1,4 +1,5 @@
 <resources>
+    <string name="app_name">Shimeji live</string>
     <string name="splash_title">Shimeji live</string>
     <string name="home_tab_home">Trang chủ</string>
     <string name="home_tab_shop">Cửa hàng</string>
