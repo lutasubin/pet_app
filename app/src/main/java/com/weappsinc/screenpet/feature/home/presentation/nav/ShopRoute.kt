@@ -13,6 +13,7 @@ import com.weappsinc.screenpet.feature.pet.presentation.PetViewModel
 @Composable
 fun ShopRoute(
     modifier: Modifier = Modifier,
+    onSelectPetGoHome: (String) -> Unit = {},
     viewModel: ShopViewModel = hiltViewModel(),
     petViewModel: PetViewModel = hiltViewModel(),
 ) {
@@ -24,7 +25,8 @@ fun ShopRoute(
         onQueryChange = viewModel::onQueryChange,
         onUnlock = viewModel::onUnlock,
         onDownload = viewModel::onDownload,
-        onSelect = { previewCharacterId = it },
+        onSelect = onSelectPetGoHome,
+        onPreviewPet = { previewCharacterId = it },
         modifier = modifier,
     )
     if (previewCharacter != null) {

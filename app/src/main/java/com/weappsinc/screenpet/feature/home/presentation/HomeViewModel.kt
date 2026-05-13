@@ -3,6 +3,7 @@ package com.weappsinc.screenpet.feature.home.presentation
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.weappsinc.screenpet.feature.home.domain.usecase.ApplyRandomShimejiMixUseCase
+import com.weappsinc.screenpet.feature.home.domain.usecase.AssignShimejiFromShopUseCase
 import com.weappsinc.screenpet.feature.home.domain.usecase.LoadShimejiCatalogUseCase
 import com.weappsinc.screenpet.feature.home.domain.usecase.ObserveHomeStateUseCase
 import com.weappsinc.screenpet.feature.home.domain.usecase.SelectShimejiAtSlotUseCase
@@ -28,6 +29,7 @@ class HomeViewModel @Inject constructor(
     private val toggleActivate: ToggleActivateUseCase,
     private val toggleSwarm: ToggleSwarmUseCase,
     private val applyRandomMix: ApplyRandomShimejiMixUseCase,
+    private val assignFromShop: AssignShimejiFromShopUseCase,
     private val overlayController: PetOverlayController,
 ) : ViewModel() {
 
@@ -92,5 +94,13 @@ class HomeViewModel @Inject constructor(
 
     fun onUnlock(characterId: String) {
         viewModelScope.launch { unlockUseCase(characterId) }
+    }
+
+    /** Chọn pet từ Shop: gán vào slot (logic trong AssignShimejiFromShopUseCase). */
+    fun onShopPetSelected(characterId: String) {
+        viewModelScope.launch {
+            val s = _uiState.value
+            assignFromShop(s.settings, s.readyIds, characterId)
+        }
     }
 }

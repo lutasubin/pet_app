@@ -17,6 +17,7 @@ fun MainScaffold(
     devMenuContent: @Composable () -> Unit,
 ) {
     var selected by rememberSaveable { mutableStateOf(MainTab.Home) }
+    var pendingShopCharacterId by remember { mutableStateOf<String?>(null) }
     var devOpen by remember { mutableStateOf(false) }
     Scaffold(
         bottomBar = {
@@ -30,8 +31,18 @@ fun MainScaffold(
         },
     ) { padding ->
         when (selected) {
-            MainTab.Home -> HomeRoute(modifier = Modifier.padding(padding))
-            MainTab.Shop -> ShopRoute(modifier = Modifier.padding(padding))
+            MainTab.Home -> HomeRoute(
+                modifier = Modifier.padding(padding),
+                pendingShopCharacterId = pendingShopCharacterId,
+                onConsumedPendingShopSelection = { pendingShopCharacterId = null },
+            )
+            MainTab.Shop -> ShopRoute(
+                modifier = Modifier.padding(padding),
+                onSelectPetGoHome = { id ->
+                    pendingShopCharacterId = id
+                    selected = MainTab.Home
+                },
+            )
             MainTab.Setting -> if (devOpen) {
                 devMenuContent()
             } else {

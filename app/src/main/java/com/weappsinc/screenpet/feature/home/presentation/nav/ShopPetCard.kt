@@ -1,6 +1,7 @@
 package com.weappsinc.screenpet.feature.home.presentation.nav
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -34,6 +35,7 @@ fun ShopPetCard(
     onUnlock: () -> Unit,
     onDownload: () -> Unit,
     onSelect: () -> Unit,
+    onThumbnailClick: () -> Unit = {},
     modifier: Modifier = Modifier,
 ) {
     Column(modifier = modifier, verticalArrangement = Arrangement.spacedBy(8.dp)) {
@@ -50,7 +52,11 @@ fun ShopPetCard(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.spacedBy(8.dp),
             ) {
-                Box(modifier = Modifier.fillMaxWidth()) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clickable(onClick = onThumbnailClick),
+                ) {
                     AssetImage(
                         assetRelativePath = character.thumbnailAssetPath,
                         contentDescription = character.displayName,

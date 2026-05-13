@@ -27,6 +27,7 @@ fun ShopScreen(
     onUnlock: (String) -> Unit,
     onDownload: (String) -> Unit,
     onSelect: (String) -> Unit,
+    onPreviewPet: (String) -> Unit = {},
     modifier: Modifier = Modifier,
 ) {
     Surface(modifier = modifier.fillMaxSize(), color = HomeTokens.Background) {
@@ -59,6 +60,7 @@ fun ShopScreen(
                             onUnlock = { onUnlock(ch.id) },
                             onDownload = { onDownload(ch.id) },
                             onSelect = { onSelect(ch.id) },
+                            onThumbnailClick = { onPreviewPet(ch.id) },
                         )
                     }
                 }
