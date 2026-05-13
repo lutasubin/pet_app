@@ -42,8 +42,17 @@ fun SettingsGeneralBlock(
     SettingsGeneralCard(title = stringResource(R.string.settings_section_general)) {
         val langLabel = when (settings.localeTag) {
             AppSettings.LOCALE_SYSTEM -> stringResource(R.string.settings_language_system)
-            "en" -> stringResource(R.string.settings_language_en)
+            "en", "en-GB", "en-US" -> stringResource(R.string.settings_language_en)
             "vi" -> stringResource(R.string.settings_language_vi)
+            "pt" -> "Português"
+            "es-ES" -> "Español"
+            "ja-JP" -> "日本語"
+            "ko-KR" -> "한국어"
+            "de" -> "Deutsch"
+            "id" -> "Indonesia"
+            "hi" -> "हिन्दी"
+            "ar" -> "العربية"
+            "tr" -> "Türkçe"
             else -> settings.localeTag
         }
         GeneralRow(

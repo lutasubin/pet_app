@@ -1,19 +1,25 @@
 package com.weappsinc.screenpet.feature.settings.presentation
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -25,6 +31,10 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -101,35 +111,56 @@ fun SettingsLanguageBottomSheet(
 ) {
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     val options = languageOptions()
+    var draftSelectedTag by remember(selectedTag) { mutableStateOf(selectedTag) }
     ModalBottomSheet(
         onDismissRequest = onDismiss,
         sheetState = sheetState,
         dragHandle = null,
     ) {
-        Column(Modifier.navigationBarsPadding().padding(16.dp)) {
-            Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.fillMaxWidth()) {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .navigationBarsPadding()
+                .padding(horizontal = 16.dp, vertical = 12.dp),
+        ) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                modifier = Modifier.fillMaxWidth(),
+            ) {
+                IconButton(onClick = onDismiss) {
+                    Icon(
+                        imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                        contentDescription = stringResource(R.string.settings_sheet_close_cd),
+                    )
+                }
                 Text(
                     text = stringResource(R.string.settings_language_sheet_title),
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier.weight(1f),
                 )
-                IconButton(onClick = onDismiss) {
-                    Icon(Icons.Filled.Close, contentDescription = stringResource(R.string.settings_sheet_close_cd))
+                IconButton(onClick = { onSelectTag(draftSelectedTag) }) {
+                    Icon(
+                        imageVector = Icons.Filled.Check,
+                        contentDescription = stringResource(R.string.settings_sheet_close_cd),
+                        tint = HomeTokens.SwitchCheckedTrack,
+                    )
                 }
             }
             Spacer(Modifier.height(8.dp))
-            options.forEach { option ->
-                LanguageOptionRow(
-                    option = option,
-                    selected = option.tag == selectedTag,
-                    onClick = {
-                        onSelectTag(option.tag)
-                        onDismiss()
-                    },
-                )
+            LazyColumn(
+                modifier = Modifier.fillMaxSize(),
+                verticalArrangement = Arrangement.spacedBy(8.dp),
+            ) {
+                items(options, key = { it.tag }) { option ->
+                    LanguageOptionRow(
+                        option = option,
+                        selected = option.tag == draftSelectedTag,
+                        onClick = { draftSelectedTag = option.tag },
+                    )
+                }
             }
-            Spacer(Modifier.height(16.dp))
         }
     }
 }
@@ -141,14 +172,18 @@ private data class LanguageOption(
 )
 
 private fun languageOptions(): List<LanguageOption> = listOf(
-    LanguageOption(AppSettings.LOCALE_SYSTEM, "flags/default.png", "Hệ thống"),
     LanguageOption("en-GB", "flags/UK.png", "English (UK)"),
     LanguageOption("en-US", "flags/us.png", "English (US)"),
+    LanguageOption("pt", "flags/pt.png", "Português"),
     LanguageOption("es-ES", "flags/es.png", "Español"),
     LanguageOption("ja-JP", "flags/jp.png", "日本語"),
     LanguageOption("ko-KR", "flags/kr.png", "한국어"),
+    LanguageOption("de", "flags/de.png", "Deutsch"),
+    LanguageOption("id", "flags/id.png", "Indonesia"),
+    LanguageOption("hi", "flags/in.png", "हिन्दी"),
     LanguageOption("ar", "flags/sa.png", "العربية"),
     LanguageOption("vi", "flags/vn.png", "Tiếng Việt"),
+    LanguageOption("tr", "flags/tr.png", "Türkçe"),
 )
 
 @Composable
@@ -168,8 +203,8 @@ private fun LanguageOptionRow(
         shadowElevation = 0.dp,
         shape = RoundedCornerShape(20.dp),
         border = androidx.compose.foundation.BorderStroke(
-            width = if (selected) 1.dp else 1.dp,
-            color = if (selected) HomeTokens.SwitchCheckedTrack else Color(0xFFE8E8ED),
+            width = 1.dp,
+            color = if (selected) HomeTokens.SwitchCheckedTrack else Color(0xFFE6ECF7),
         ),
     ) {
         Row(
@@ -198,14 +233,15 @@ private fun LanguageOptionRow(
                 Box(
                     modifier = Modifier
                         .size(24.dp)
-                        .clip(CircleShape),
+                        .clip(CircleShape)
+                        .background(HomeTokens.SwitchCheckedTrack),
                     contentAlignment = Alignment.Center,
                 ) {
                     Icon(
                         imageVector = Icons.Filled.Check,
                         contentDescription = null,
-                        tint = HomeTokens.SwitchCheckedTrack,
-                        modifier = Modifier.size(20.dp),
+                        tint = Color.White,
+                        modifier = Modifier.size(16.dp),
                     )
                 }
             } else {
