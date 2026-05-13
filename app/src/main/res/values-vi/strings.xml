@@ -19,6 +19,8 @@
     <string name="shop_download">Tải xuống</string>
     <string name="shop_selected">Chọn</string>
     <string name="shop_downloading">Đang tải...(%1$d%%)</string>
+    <string name="shop_pet_preview_title">Xem trước pet</string>
+    <string name="shop_pet_preview_back_cd">Quay lại cửa hàng</string>
     <string name="settings_section_animation">Điều khiển animation</string>
     <string name="settings_section_general">Chung</string>
     <string name="settings_ghost_title">Chế độ ma</string>

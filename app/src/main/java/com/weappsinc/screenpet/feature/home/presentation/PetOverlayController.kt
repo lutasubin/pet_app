@@ -45,7 +45,7 @@ class PetOverlayController @Inject constructor(
         val specs = chosen.map { (idx, ch) ->
             PetArenaSpec(
                 id = PetId("slot_$idx:${ch.id}"),
-                assetFolder = "${ch.pack.dirName}/${ch.displayName}",
+                assetFolder = ch.spriteAssetFolder(),
             )
         }
         val area = arenaRepository.arena.value.playArea

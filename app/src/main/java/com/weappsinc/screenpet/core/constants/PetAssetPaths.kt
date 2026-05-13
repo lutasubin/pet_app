@@ -1,8 +1,8 @@
 package com.weappsinc.screenpet.core.constants
 
 /**
- * Duong dan asset pet trong thu muc [android_asset].
- * Anh shime dat tai `assets/img/shime1.png` .. `shime46.png`.
+ * Duong dan asset pet trong [android_asset].
+ * [SHIME_IMAGE_FOLDER] chi dung cho man dev / test nhanh; Shimeji that tu catalog dat duoi `data1/...` hoac `data2/...`.
  */
 object PetAssetPaths {
     const val SHIME_IMAGE_FOLDER: String = "img"

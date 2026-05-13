@@ -10,12 +10,12 @@ import kotlinx.coroutines.withContext
 
 /** Tai san truoc tat ca frame shime de tranh nhay khi doi frame. */
 @Composable
-fun PetSpritePrefetcher() {
+fun PetSpritePrefetcher(shimeAssetFolder: String = PetAssetPaths.SHIME_IMAGE_FOLDER) {
     val context = LocalContext.current
-    LaunchedEffect(Unit) {
+    LaunchedEffect(shimeAssetFolder) {
         withContext(Dispatchers.IO) {
             for (i in ShimejiFrameIndices.MIN..ShimejiFrameIndices.MAX) {
-                PetSpriteCache.load(context, PetAssetPaths.shimeRelativePath(i))
+                PetSpriteCache.load(context, PetAssetPaths.shimeRelativePath(shimeAssetFolder, i))
             }
         }
     }

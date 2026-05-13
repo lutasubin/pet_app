@@ -12,9 +12,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.IntOffset
-import com.weappsinc.screenpet.core.constants.PetAssetPaths
 import com.weappsinc.screenpet.core.constants.PetSpriteAnchor
 import com.weappsinc.screenpet.core.constants.ShimejiFrameCatalog
+import com.weappsinc.screenpet.core.constants.PetAssetPaths
 import com.weappsinc.screenpet.feature.pet.domain.model.PetWorldState
 import kotlin.math.roundToInt
 
@@ -23,9 +23,11 @@ fun PetPlayField(
     world: PetWorldState,
     eventSink: PetPlayEventSink,
     modifier: Modifier = Modifier,
+    /** Sprite catalog: `img` (dev) hoac `data1/TenPet` tu ShimejiCharacter.spriteAssetFolder(). */
+    shimeAssetFolder: String = PetAssetPaths.SHIME_IMAGE_FOLDER,
 ) {
     val density = LocalDensity.current
-    PetSpritePrefetcher()
+    PetSpritePrefetcher(shimeAssetFolder = shimeAssetFolder)
     BoxWithConstraints(modifier = modifier.fillMaxSize()) {
         LaunchedEffect(maxWidth, maxHeight) {
             val wPx = with(density) { maxWidth.roundToPx() }
@@ -35,7 +37,7 @@ fun PetPlayField(
         val snap = world.snapshot
         val clip = ShimejiFrameCatalog.clip(snap.clipId)
         val idx = snap.frameIndex.coerceIn(0, clip.frameIndices.lastIndex)
-        val path = PetAssetPaths.shimeRelativePath(clip.frameIndices[idx])
+        val path = PetAssetPaths.shimeRelativePath(shimeAssetFolder, clip.frameIndices[idx])
         val leftPx = snap.anchorXPx - PetSpriteAnchor.ANCHOR_X_IN_SPRITE
         val topPx = snap.anchorYPx - PetSpriteAnchor.ANCHOR_Y_IN_SPRITE
         val snapState = rememberUpdatedState(snap)

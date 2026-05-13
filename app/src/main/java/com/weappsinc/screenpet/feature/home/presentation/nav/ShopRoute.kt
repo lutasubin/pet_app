@@ -31,6 +31,7 @@ fun ShopRoute(
     )
     if (previewCharacter != null) {
         ShopPetPreviewScreen(
+            character = previewCharacter,
             petViewModel = petViewModel,
             onBack = { previewCharacterId = null },
         )

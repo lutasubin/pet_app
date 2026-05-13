@@ -38,6 +38,8 @@
     <string name="shop_download">Download</string>
     <string name="shop_selected">Select</string>
     <string name="shop_downloading">Downloading...(%1$d%%)</string>
+    <string name="shop_pet_preview_title">Pet preview</string>
+    <string name="shop_pet_preview_back_cd">Back to Shop</string>
     <string name="setting_placeholder">Settings</string>
     <string name="setting_open_dev_menu">Dev menu (PetTestScreen)</string>
     <string name="settings_section_animation">Animation Control</string>
