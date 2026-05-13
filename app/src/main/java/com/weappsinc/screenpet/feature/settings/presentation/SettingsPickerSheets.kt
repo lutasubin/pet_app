@@ -117,50 +117,55 @@ fun SettingsLanguageBottomSheet(
         sheetState = sheetState,
         dragHandle = null,
     ) {
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .navigationBarsPadding()
-                .padding(horizontal = 16.dp, vertical = 12.dp),
-        ) {
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(8.dp),
-                modifier = Modifier.fillMaxWidth(),
+        Box(modifier = Modifier.fillMaxSize()) {
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .navigationBarsPadding()
+                    .padding(horizontal = 16.dp, vertical = 12.dp),
             ) {
-                IconButton(onClick = onDismiss) {
-                    Icon(
-                        imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                        contentDescription = stringResource(R.string.settings_sheet_close_cd),
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    modifier = Modifier.fillMaxWidth(),
+                ) {
+                    IconButton(onClick = onDismiss) {
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = stringResource(R.string.settings_sheet_close_cd),
+                        )
+                    }
+                    Text(
+                        text = stringResource(R.string.settings_language_sheet_title),
+                        style = MaterialTheme.typography.titleMedium,
+                        fontWeight = FontWeight.Bold,
+                        modifier = Modifier.weight(1f),
                     )
+                    IconButton(onClick = { onSelectTag(draftSelectedTag) }) {
+                        Icon(
+                            imageVector = Icons.Filled.Check,
+                            contentDescription = stringResource(R.string.settings_sheet_close_cd),
+                            tint = HomeTokens.SwitchCheckedTrack,
+                        )
+                    }
                 }
-                Text(
-                    text = stringResource(R.string.settings_language_sheet_title),
-                    style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.Bold,
-                    modifier = Modifier.weight(1f),
-                )
-                IconButton(onClick = { onSelectTag(draftSelectedTag) }) {
-                    Icon(
-                        imageVector = Icons.Filled.Check,
-                        contentDescription = stringResource(R.string.settings_sheet_close_cd),
-                        tint = HomeTokens.SwitchCheckedTrack,
-                    )
+                Spacer(Modifier.height(8.dp))
+                LazyColumn(
+                    modifier = Modifier.fillMaxSize(),
+                    verticalArrangement = Arrangement.spacedBy(8.dp),
+                ) {
+                    items(options, key = { it.tag }) { option ->
+                        LanguageOptionRow(
+                            option = option,
+                            selected = option.tag == draftSelectedTag,
+                            onClick = { draftSelectedTag = option.tag },
+                        )
+                    }
                 }
             }
-            Spacer(Modifier.height(8.dp))
-            LazyColumn(
-                modifier = Modifier.fillMaxSize(),
-                verticalArrangement = Arrangement.spacedBy(8.dp),
-            ) {
-                items(options, key = { it.tag }) { option ->
-                    LanguageOptionRow(
-                        option = option,
-                        selected = option.tag == draftSelectedTag,
-                        onClick = { draftSelectedTag = option.tag },
-                    )
-                }
-            }
+            // ModalBottomSheet ngu trong window rieng -> overlay o root activity khong che duoc.
+            // Render them o day de loading hien NGAY trong sheet, tranh nhay luc sheet bat dau dong.
+            LocaleTransitionOverlay()
         }
     }
 }

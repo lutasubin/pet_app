@@ -1,19 +1,14 @@
 package com.weappsinc.screenpet.feature.settings.presentation
 
 import androidx.activity.ComponentActivity
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -33,7 +28,6 @@ fun SettingsRoute(
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
     var languageOpen by remember { mutableStateOf(false) }
-    var localeApplying by remember { mutableStateOf(false) }
     val shareMessage = stringResource(R.string.settings_share_message, context.packageName)
 
     Box(modifier) {
@@ -58,27 +52,26 @@ fun SettingsRoute(
                 selectedTag = settings.localeTag,
                 onDismiss = { languageOpen = false },
                 onSelectTag = { tag ->
-                    scope.launch {
-                        localeApplying = true
+                    if (tag == settings.localeTag) {
                         languageOpen = false
-                        // Cho phep frame loading render truoc khi recreate Activity.
-                        delay(220)
+                        return@SettingsLanguageBottomSheet
+                    }
+                    // Overlay (trong sheet + root) hien NGAY o frame ke tiep.
+                    AppLocaleTransitionGate.begin()
+                    scope.launch {
+                        // Cho overlay fade-in xong (~140ms > 120ms tween) de che hoan toan
+                        // truoc khi cau hinh locale doi -> tranh thay chu cu loe ra.
+                        delay(140)
                         viewModel.persistLocaleTag(tag)
+                        // configChanges=locale -> system goi onConfigurationChanged,
+                        // Compose recompose tat ca stringResource. Khong recreate, khong nhay.
                         AppLocaleApplier.applyAndRecreate(activity, tag)
+                        // Cho recompose xong roi moi dong sheet (overlay van dang che).
+                        delay(120)
+                        languageOpen = false
                     }
                 },
             )
-        }
-        if (localeApplying) {
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(Color(0xCCFFFFFF))
-                    .pointerInput(Unit) { /* nuot moi cham trong khi dang doi locale */ },
-                contentAlignment = Alignment.Center,
-            ) {
-                GradientCircularLoading()
-            }
         }
     }
 }
