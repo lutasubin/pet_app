@@ -84,4 +84,12 @@
     <string name="pet_demo_clips">All clips (enum)</string>
     <string name="pet_demo_stop">Stop demo</string>
     <string name="pet_demo_clip_label">Viewing clip: %1$s</string>
+
+    <string name="onboarding_caption_1">Cute pets walk and play on your screen.</string>
+    <string name="onboarding_caption_2">Easily customize character speed and size to your liking.</string>
+    <string name="onboarding_caption_3">Start enjoying fun moments with your beloved pet.</string>
+    <string name="onboarding_action_next">NEXT</string>
+    <string name="onboarding_action_start">START</string>
+    <string name="onboarding_progress_cd">Onboarding progress %1$d of %2$d</string>
+    <string name="onboarding_image_cd">Onboarding illustration</string>
 </resources>

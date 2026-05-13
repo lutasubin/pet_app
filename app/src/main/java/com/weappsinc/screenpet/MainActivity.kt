@@ -15,6 +15,7 @@ class MainActivity : ComponentActivity() {
 
     private val petViewModel: PetViewModel by viewModels()
     private val splashViewModel: SplashViewModel by viewModels()
+    private val appEntryViewModel: AppEntryViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -25,6 +26,7 @@ class MainActivity : ComponentActivity() {
                     activity = this@MainActivity,
                     splashViewModel = splashViewModel,
                     petViewModel = petViewModel,
+                    appEntryViewModel = appEntryViewModel,
                 )
             }
         }
