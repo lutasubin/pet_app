@@ -95,6 +95,10 @@
     <string name="pet_demo_stop">Tat demo</string>
     <string name="pet_demo_clip_label">Dang xem clip: %1$s</string>
 
+    <string name="first_run_language_title">Choose your language</string>
+    <string name="first_run_language_subtitle">You can change this later in Settings.</string>
+    <string name="first_run_language_continue">Continue</string>
+
     <string name="onboarding_caption_1">Cute pets walk and play on your screen.</string>
     <string name="onboarding_caption_2">Easily customize character speed and size to your liking.</string>
     <string name="onboarding_caption_3">Start enjoying fun moments with your beloved pet.</string>

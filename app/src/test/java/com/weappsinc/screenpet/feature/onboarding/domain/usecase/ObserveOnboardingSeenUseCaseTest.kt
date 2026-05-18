@@ -22,5 +22,7 @@ class ObserveOnboardingSeenUseCaseTest {
     private class FakeRepo(private val source: Flow<Boolean>) : OnboardingRepository {
         override fun observeSeen(): Flow<Boolean> = source
         override suspend fun markSeen() = Unit
+        override fun observeLanguagePickerCompleted(): Flow<Boolean> = flowOf(false)
+        override suspend fun markLanguagePickerCompleted() = Unit
     }
 }

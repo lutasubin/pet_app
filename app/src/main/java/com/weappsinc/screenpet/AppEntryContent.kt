@@ -14,6 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.weappsinc.screenpet.feature.home.presentation.nav.MainScaffold
+import com.weappsinc.screenpet.feature.onboarding.presentation.FirstRunLanguageRoute
 import com.weappsinc.screenpet.feature.onboarding.presentation.OnboardingRoute
 import com.weappsinc.screenpet.feature.pet.presentation.PetViewModel
 import com.weappsinc.screenpet.feature.settings.presentation.AppLocaleTransitionGate
@@ -28,29 +29,41 @@ fun AppEntryContent(
     petViewModel: PetViewModel,
     appEntryViewModel: AppEntryViewModel,
 ) {
-    // Neu vua recreate do doi locale -> bo qua splash de overlay loading chiem suot man.
     var showSplash by remember { mutableStateOf(!AppLocaleTransitionGate.isActive()) }
+    val postSplashDestination by appEntryViewModel.postSplashDestination.collectAsStateWithLifecycle()
     val onboardingSeen by appEntryViewModel.onboardingSeen.collectAsStateWithLifecycle()
-    // Trang thai onboarding chi quyet dinh khi flag da load + splash da xong.
-    var showOnboarding by remember { mutableStateOf<Boolean?>(null) }
-    LaunchedEffect(onboardingSeen, showSplash) {
-        if (!showSplash && onboardingSeen != null && showOnboarding == null) {
-            showOnboarding = onboardingSeen == false
+    var localDestination by remember { mutableStateOf<AppEntryDestination?>(null) }
+
+    LaunchedEffect(showSplash, postSplashDestination) {
+        if (!showSplash && localDestination == null && postSplashDestination != null) {
+            localDestination = postSplashDestination
         }
     }
+
     Box(modifier = Modifier.fillMaxSize()) {
         when {
             showSplash -> SplashRoute(
                 viewModel = splashViewModel,
                 onFinished = { showSplash = false },
             )
-            // Splash xong nhung flag chua kip load -> mau trang trang an toan, tranh nhay den.
-            showOnboarding == null -> Box(
+            localDestination == null -> Box(
                 modifier = Modifier
                     .fillMaxSize()
                     .background(Color.White),
             )
-            showOnboarding == true -> OnboardingRoute(onFinish = { showOnboarding = false })
+            localDestination == AppEntryDestination.Language -> FirstRunLanguageRoute(
+                activity = activity,
+                onFinish = {
+                    localDestination = if (onboardingSeen == true) {
+                        AppEntryDestination.Main
+                    } else {
+                        AppEntryDestination.Onboarding
+                    }
+                },
+            )
+            localDestination == AppEntryDestination.Onboarding -> OnboardingRoute(
+                onFinish = { localDestination = AppEntryDestination.Main },
+            )
             else -> MainScaffold(
                 devMenuContent = {
                     MainPetTestContent(activity = activity, petViewModel = petViewModel)

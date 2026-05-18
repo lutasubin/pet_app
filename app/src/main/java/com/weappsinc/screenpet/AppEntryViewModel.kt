@@ -2,28 +2,37 @@ package com.weappsinc.screenpet
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.weappsinc.screenpet.feature.onboarding.domain.usecase.ObserveLanguagePickerCompletedUseCase
 import com.weappsinc.screenpet.feature.onboarding.domain.usecase.ObserveOnboardingSeenUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 
-/**
- * Giu trang thai "da xem onboarding" cho AppEntryContent.
- * - null  = chua biet (DataStore chua emit lan dau)
- * - false = chua xem onboarding (lan dau cai)
- * - true  = da xem (di thang Main sau splash)
- */
 @HiltViewModel
 class AppEntryViewModel @Inject constructor(
     observeOnboardingSeen: ObserveOnboardingSeenUseCase,
+    observeLanguagePickerCompleted: ObserveLanguagePickerCompletedUseCase,
 ) : ViewModel() {
 
     val onboardingSeen: StateFlow<Boolean?> = observeOnboardingSeen()
-        .stateIn(
-            scope = viewModelScope,
-            started = SharingStarted.Eagerly,
-            initialValue = null,
-        )
+        .stateIn(viewModelScope, SharingStarted.Eagerly, initialValue = null)
+
+    val languagePickerCompleted: StateFlow<Boolean?> = observeLanguagePickerCompleted()
+        .stateIn(viewModelScope, SharingStarted.Eagerly, initialValue = null)
+
+    /** null = DataStore chua san sang. */
+    val postSplashDestination: StateFlow<AppEntryDestination?> = combine(
+        onboardingSeen,
+        languagePickerCompleted,
+    ) { seen, langDone ->
+        if (seen == null || langDone == null) null
+        else when {
+            !langDone -> AppEntryDestination.Language
+            !seen -> AppEntryDestination.Onboarding
+            else -> AppEntryDestination.Main
+        }
+    }.stateIn(viewModelScope, SharingStarted.Eagerly, initialValue = null)
 }

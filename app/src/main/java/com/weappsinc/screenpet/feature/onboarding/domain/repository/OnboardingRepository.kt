@@ -6,4 +6,7 @@ import kotlinx.coroutines.flow.Flow
 interface OnboardingRepository {
     fun observeSeen(): Flow<Boolean>
     suspend fun markSeen()
+
+    fun observeLanguagePickerCompleted(): Flow<Boolean>
+    suspend fun markLanguagePickerCompleted()
 }

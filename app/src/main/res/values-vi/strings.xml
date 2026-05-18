@@ -47,6 +47,10 @@
     <string name="settings_share_message">Thử Shimeji live: https://play.google.com/store/apps/details?id=%1$s</string>
     <string name="settings_policy_title">Chính sách riêng tư</string>
 
+    <string name="first_run_language_title">Chọn ngôn ngữ</string>
+    <string name="first_run_language_subtitle">Bạn có thể đổi lại sau trong Cài đặt.</string>
+    <string name="first_run_language_continue">Tiếp tục</string>
+
     <string name="onboarding_caption_1">Thú cưng dễ thương đi lại và vui chơi trên màn hình của bạn.</string>
     <string name="onboarding_caption_2">Dễ dàng tùy chỉnh tốc độ và kích thước nhân vật theo ý thích.</string>
     <string name="onboarding_caption_3">Bắt đầu tận hưởng những khoảnh khắc vui vẻ cùng thú cưng yêu quý.</string>

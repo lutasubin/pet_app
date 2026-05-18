@@ -25,5 +25,9 @@ class MarkOnboardingSeenUseCaseTest {
         override suspend fun markSeen() {
             markSeenCallCount += 1
         }
+
+        override fun observeLanguagePickerCompleted(): Flow<Boolean> = flowOf(false)
+
+        override suspend fun markLanguagePickerCompleted() = Unit
     }
 }

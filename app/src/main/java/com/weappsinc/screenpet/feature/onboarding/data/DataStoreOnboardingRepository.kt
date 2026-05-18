@@ -21,4 +21,14 @@ class DataStoreOnboardingRepository @Inject constructor(
     override suspend fun markSeen() {
         dataStore.edit { it[OnboardingPreferencesKeys.Seen] = true }
     }
+
+    override fun observeLanguagePickerCompleted(): Flow<Boolean> = dataStore.data.map { prefs ->
+        // Nguoi dung cu da xem onboarding truoc khi co man language -> bo qua.
+        if (prefs[OnboardingPreferencesKeys.Seen] == true) return@map true
+        prefs[OnboardingPreferencesKeys.LanguagePickerCompleted] ?: false
+    }
+
+    override suspend fun markLanguagePickerCompleted() {
+        dataStore.edit { it[OnboardingPreferencesKeys.LanguagePickerCompleted] = true }
+    }
 }

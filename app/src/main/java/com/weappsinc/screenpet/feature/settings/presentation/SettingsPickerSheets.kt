@@ -110,7 +110,7 @@ fun SettingsLanguageBottomSheet(
     onSelectTag: (String) -> Unit,
 ) {
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
-    val options = languageOptions()
+    val options = appLanguageOptions()
     var draftSelectedTag by remember(selectedTag) { mutableStateOf(selectedTag) }
     ModalBottomSheet(
         onDismissRequest = onDismiss,
@@ -155,11 +155,13 @@ fun SettingsLanguageBottomSheet(
                     verticalArrangement = Arrangement.spacedBy(8.dp),
                 ) {
                     items(options, key = { it.tag }) { option ->
-                        LanguageOptionRow(
-                            option = option,
-                            selected = option.tag == draftSelectedTag,
-                            onClick = { draftSelectedTag = option.tag },
-                        )
+                        Box(Modifier.padding(vertical = 6.dp)) {
+                            LanguageOptionRow(
+                                option = option,
+                                selected = option.tag == draftSelectedTag,
+                                onClick = { draftSelectedTag = option.tag },
+                            )
+                        }
                     }
                 }
             }
@@ -170,97 +172,3 @@ fun SettingsLanguageBottomSheet(
     }
 }
 
-private data class LanguageOption(
-    val tag: String,
-    val flagAsset: String,
-    val label: String,
-)
-
-private fun languageOptions(): List<LanguageOption> = listOf(
-    LanguageOption("en-GB", "flags/UK.png", "English (UK)"),
-    LanguageOption("en-US", "flags/us.png", "English (US)"),
-    LanguageOption("pt", "flags/pt.png", "Português"),
-    LanguageOption("es-ES", "flags/es.png", "Español"),
-    LanguageOption("ja-JP", "flags/jp.png", "日本語"),
-    LanguageOption("ko-KR", "flags/kr.png", "한국어"),
-    LanguageOption("de", "flags/de.png", "Deutsch"),
-    LanguageOption("id", "flags/id.png", "Indonesia"),
-    LanguageOption("hi", "flags/in.png", "हिन्दी"),
-    LanguageOption("ar", "flags/sa.png", "العربية"),
-    LanguageOption("vi", "flags/vn.png", "Tiếng Việt"),
-    LanguageOption("tr", "flags/tr.png", "Türkçe"),
-)
-
-@Composable
-private fun LanguageOptionRow(
-    option: LanguageOption,
-    selected: Boolean,
-    onClick: () -> Unit,
-) {
-    Surface(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(vertical = 6.dp)
-            .clip(RoundedCornerShape(20.dp))
-            .clickable(onClick = onClick),
-        color = Color.White,
-        tonalElevation = 0.dp,
-        shadowElevation = 0.dp,
-        shape = RoundedCornerShape(20.dp),
-        border = androidx.compose.foundation.BorderStroke(
-            width = 1.dp,
-            color = if (selected) HomeTokens.SwitchCheckedTrack else Color(0xFFE6ECF7),
-        ),
-    ) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 14.dp, vertical = 12.dp),
-            verticalAlignment = Alignment.CenterVertically,
-        ) {
-            AsyncImage(
-                model = "file:///android_asset/${option.flagAsset}",
-                contentDescription = option.label,
-                modifier = Modifier
-                    .size(34.dp)
-                    .clip(CircleShape),
-            )
-            Text(
-                text = option.label,
-                style = MaterialTheme.typography.titleSmall,
-                color = HomeTokens.SwarmTitle,
-                fontWeight = if (selected) FontWeight.Bold else FontWeight.Medium,
-                modifier = Modifier
-                    .weight(1f)
-                    .padding(start = 12.dp),
-            )
-            if (selected) {
-                Box(
-                    modifier = Modifier
-                        .size(24.dp)
-                        .clip(CircleShape)
-                        .background(HomeTokens.SwitchCheckedTrack),
-                    contentAlignment = Alignment.Center,
-                ) {
-                    Icon(
-                        imageVector = Icons.Filled.Check,
-                        contentDescription = null,
-                        tint = Color.White,
-                        modifier = Modifier.size(16.dp),
-                    )
-                }
-            } else {
-                Box(
-                    modifier = Modifier
-                        .size(24.dp)
-                        .border(
-                            width = 1.dp,
-                            color = Color(0xFFBCC2CD),
-                            shape = CircleShape,
-                        ),
-                ) {
-                }
-            }
-        }
-    }
-}
