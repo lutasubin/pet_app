@@ -59,7 +59,17 @@
     <string name="settings_language_en">English</string>
     <string name="settings_language_vi">Vietnamese</string>
     <string name="settings_language_sheet_title">Language</string>
-    <string name="settings_rate_title">Rate app</string>
+    <string name="settings_rate_title">Nilai aplikasi</string>
+    <string name="settings_rate_body_initial">Kami berusaha meningkatkan pengalaman Anda. Kami ingin mendengar pendapat Anda!</string>
+    <string name="settings_rate_title_negative">Oh tidak!</string>
+    <string name="settings_rate_body_negative">Kami sedang meningkatkan pengalaman Anda. Silakan beri masukan!</string>
+    <string name="settings_rate_title_four">Kamu juga hebat!</string>
+    <string name="settings_rate_title_five">Kami juga menyayangimu!</string>
+    <string name="settings_rate_body_positive">Terima kasih atas ulasan positifmu. Jangan ragu berbagi masukan lagi.</string>
+    <string name="settings_rate_hint">Berikan rating terbaik untuk kami</string>
+    <string name="settings_rate_button">Nilai</string>
+    <string name="settings_rate_star_cd">Bintang %1$d</string>
+    <string name="settings_rate_illustration_cd">Ilustrasi penilaian</string>
     <string name="settings_share_title">Share</string>
     <string name="settings_share_message">Try Shimeji live: https://play.google.com/store/apps/details?id=%1$s</string>
     <string name="settings_policy_title">Privacy policy</string>

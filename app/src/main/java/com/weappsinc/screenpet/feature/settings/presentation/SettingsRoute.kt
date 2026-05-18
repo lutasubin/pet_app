@@ -28,6 +28,8 @@ fun SettingsRoute(
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
     var languageOpen by remember { mutableStateOf(false) }
+    var rateOpen by remember { mutableStateOf(false) }
+    val savedRating by viewModel.savedRatingStars.collectAsStateWithLifecycle()
     val shareMessage = stringResource(R.string.settings_share_message, context.packageName)
 
     Box(modifier) {
@@ -37,7 +39,7 @@ fun SettingsRoute(
             onSizeChangeFinished = viewModel::onAnimationSizeChangeFinished,
             onSpeedChangeFinished = viewModel::onAnimationSpeedChangeFinished,
             onLanguageClick = { languageOpen = true },
-            onRateApp = { SettingsExternalActions.openRateApp(context) },
+            onRateApp = { rateOpen = true },
             onShareApp = { SettingsExternalActions.openShareApp(context, shareMessage) },
             onPrivacyPolicy = {
                 SettingsExternalActions.openPrivacyPolicy(
@@ -47,6 +49,16 @@ fun SettingsRoute(
             },
             onOpenDevMenu = onOpenDevMenu,
         )
+        if (rateOpen) {
+            SettingsRateBottomSheet(
+                initialStars = savedRating ?: 0,
+                onDismiss = { rateOpen = false },
+                onSubmit = { stars ->
+                    viewModel.onRatingSubmitted(stars)
+                    rateOpen = false
+                },
+            )
+        }
         if (languageOpen) {
             SettingsLanguageBottomSheet(
                 selectedTag = settings.localeTag,

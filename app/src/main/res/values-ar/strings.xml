@@ -58,6 +58,16 @@
     <string name="settings_language_vi">الفيتنامية</string>
     <string name="settings_language_sheet_title">اللغة</string>
     <string name="settings_rate_title">قيّم التطبيق</string>
+    <string name="settings_rate_body_initial">نعمل بجد لتحسين تجربتك. نود سماع رأيك!</string>
+    <string name="settings_rate_title_negative">يا للأسف!</string>
+    <string name="settings_rate_body_negative">نعمل على تحسين تجربتك. يرجى ترك ملاحظاتك!</string>
+    <string name="settings_rate_title_four">أنت رائع أيضاً!</string>
+    <string name="settings_rate_title_five">نحن نحبك أيضاً!</string>
+    <string name="settings_rate_body_positive">شكراً على تقييمك الإيجابي. لا تتردد في مشاركة المزيد من الملاحظات.</string>
+    <string name="settings_rate_hint">أعطنا أفضل تقييم</string>
+    <string name="settings_rate_button">قيّمنا</string>
+    <string name="settings_rate_star_cd">نجمة %1$d</string>
+    <string name="settings_rate_illustration_cd">رسم التقييم</string>
     <string name="settings_share_title">مشاركة</string>
     <string name="settings_share_message">جرّب Shimeji live: https://play.google.com/store/apps/details?id=%1$s</string>
     <string name="settings_policy_title">سياسة الخصوصية</string>

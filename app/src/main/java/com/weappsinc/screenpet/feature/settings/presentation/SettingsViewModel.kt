@@ -7,6 +7,8 @@ import com.weappsinc.screenpet.feature.settings.domain.usecase.ObserveAppSetting
 import com.weappsinc.screenpet.feature.settings.domain.usecase.SetAnimationSizeScaleUseCase
 import com.weappsinc.screenpet.feature.settings.domain.usecase.SetAnimationSpeedMultiplierUseCase
 import com.weappsinc.screenpet.feature.settings.domain.usecase.SetGhostModeUseCase
+import com.weappsinc.screenpet.feature.settings.domain.usecase.ObserveSavedAppRatingUseCase
+import com.weappsinc.screenpet.feature.settings.domain.usecase.SaveAppRatingUseCase
 import com.weappsinc.screenpet.feature.settings.domain.usecase.SetLocaleTagUseCase
 import com.weappsinc.screenpet.feature.settings.domain.usecase.SetSessionDurationMinutesUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -24,7 +26,12 @@ class SettingsViewModel @Inject constructor(
     private val setAnimationSpeedMultiplier: SetAnimationSpeedMultiplierUseCase,
     private val setSessionDurationMinutes: SetSessionDurationMinutesUseCase,
     private val setLocaleTag: SetLocaleTagUseCase,
+    observeSavedAppRating: ObserveSavedAppRatingUseCase,
+    private val saveAppRating: SaveAppRatingUseCase,
 ) : ViewModel() {
+
+    val savedRatingStars: StateFlow<Int?> = observeSavedAppRating()
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), null)
 
     val uiState: StateFlow<AppSettings> = observeAppSettings()
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), AppSettings())
@@ -47,5 +54,9 @@ class SettingsViewModel @Inject constructor(
 
     suspend fun persistLocaleTag(tag: String) {
         setLocaleTag(tag)
+    }
+
+    fun onRatingSubmitted(stars: Int) {
+        viewModelScope.launch { saveAppRating(stars) }
     }
 }

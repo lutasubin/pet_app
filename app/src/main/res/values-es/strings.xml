@@ -58,6 +58,16 @@
     <string name="settings_language_vi">Vietnamita</string>
     <string name="settings_language_sheet_title">Idioma</string>
     <string name="settings_rate_title">Calificar app</string>
+    <string name="settings_rate_body_initial">Estamos trabajando para mejorar tu experiencia. ¡Nos encantaría conocer tu opinión!</string>
+    <string name="settings_rate_title_negative">¡Oh no!</string>
+    <string name="settings_rate_body_negative">Estamos mejorando tu experiencia. ¡Déjanos tus comentarios!</string>
+    <string name="settings_rate_title_four">¡Tú también eres increíble!</string>
+    <string name="settings_rate_title_five">¡Nosotros también te queremos!</string>
+    <string name="settings_rate_body_positive">Gracias por tu reseña positiva. No dudes en compartir más comentarios.</string>
+    <string name="settings_rate_hint">Danos tu mejor valoración</string>
+    <string name="settings_rate_button">Calificar</string>
+    <string name="settings_rate_star_cd">Estrella %1$d</string>
+    <string name="settings_rate_illustration_cd">Ilustración de valoración</string>
     <string name="settings_share_title">Compartir</string>
     <string name="settings_share_message">Prueba Shimeji live: https://play.google.com/store/apps/details?id=%1$s</string>
     <string name="settings_policy_title">Política de privacidad</string>

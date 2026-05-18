@@ -62,6 +62,16 @@
     <string name="settings_language_vi">Vietnamese</string>
     <string name="settings_language_sheet_title">Language</string>
     <string name="settings_rate_title">Rate app</string>
+    <string name="settings_rate_body_initial">We\'re working hard to make your experience even better. We\'d love to hear your thoughts!</string>
+    <string name="settings_rate_title_negative">Oh No!</string>
+    <string name="settings_rate_body_negative">We\'re working hard to improve your experience. Please leave us some feedback!</string>
+    <string name="settings_rate_title_four">You\'re awesome too!</string>
+    <string name="settings_rate_title_five">We love you too!</string>
+    <string name="settings_rate_body_positive">Thank you for your positive review. Please feel free to share any further feedback.</string>
+    <string name="settings_rate_hint">Give us your best rating</string>
+    <string name="settings_rate_button">Rate Us</string>
+    <string name="settings_rate_star_cd">Star %1$d</string>
+    <string name="settings_rate_illustration_cd">Rating mood illustration</string>
     <string name="settings_share_title">Share</string>
     <string name="settings_share_message">Try Shimeji live: https://play.google.com/store/apps/details?id=%1$s</string>
     <string name="settings_policy_title">Privacy policy</string>

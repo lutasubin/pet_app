@@ -33,6 +33,16 @@
     <string name="settings_language_en">Tiếng Anh</string>
     <string name="settings_language_sheet_title">Ngôn ngữ</string>
     <string name="settings_rate_title">Đánh giá ứng dụng</string>
+    <string name="settings_rate_body_initial">Chúng tôi đang nỗ lực để trải nghiệm của bạn tốt hơn. Rất mong nhận ý kiến của bạn!</string>
+    <string name="settings_rate_title_negative">Ôi không!</string>
+    <string name="settings_rate_body_negative">Chúng tôi đang cải thiện trải nghiệm. Hãy để lại phản hồi nhé!</string>
+    <string name="settings_rate_title_four">Bạn cũng tuyệt vời!</string>
+    <string name="settings_rate_title_five">Chúng tôi cũng yêu bạn!</string>
+    <string name="settings_rate_body_positive">Cảm ơn đánh giá tích cực. Hãy chia sẻ thêm ý kiến nếu bạn muốn.</string>
+    <string name="settings_rate_hint">Đánh giá tốt nhất cho chúng tôi</string>
+    <string name="settings_rate_button">Đánh giá</string>
+    <string name="settings_rate_star_cd">Sao %1$d</string>
+    <string name="settings_rate_illustration_cd">Minh họa cảm xúc đánh giá</string>
     <string name="settings_share_title">Chia sẻ</string>
     <string name="settings_share_message">Thử Shimeji live: https://play.google.com/store/apps/details?id=%1$s</string>
     <string name="settings_policy_title">Chính sách riêng tư</string>

@@ -58,6 +58,16 @@
     <string name="settings_language_vi">ベトナム語</string>
     <string name="settings_language_sheet_title">言語</string>
     <string name="settings_rate_title">アプリを評価</string>
+    <string name="settings_rate_body_initial">より良い体験のために努力しています。ぜひご意見をお聞かせください！</string>
+    <string name="settings_rate_title_negative">残念！</string>
+    <string name="settings_rate_body_negative">体験向上に努めています。フィードバックをお願いします！</string>
+    <string name="settings_rate_title_four">あなたも素晴らしい！</string>
+    <string name="settings_rate_title_five">私たちもあなたが大好き！</string>
+    <string name="settings_rate_body_positive">ポジティブなレビューありがとうございます。さらにご意見があればぜひどうぞ。</string>
+    <string name="settings_rate_hint">最高評価をお願いします</string>
+    <string name="settings_rate_button">評価する</string>
+    <string name="settings_rate_star_cd">星 %1$d</string>
+    <string name="settings_rate_illustration_cd">評価のイラスト</string>
     <string name="settings_share_title">共有</string>
     <string name="settings_share_message">Shimeji live を試してみてください: https://play.google.com/store/apps/details?id=%1$s</string>
     <string name="settings_policy_title">プライバシーポリシー</string>

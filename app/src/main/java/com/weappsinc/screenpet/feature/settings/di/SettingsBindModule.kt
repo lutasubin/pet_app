@@ -1,6 +1,8 @@
 package com.weappsinc.screenpet.feature.settings.di
 
+import com.weappsinc.screenpet.feature.settings.data.DataStoreAppRatingRepository
 import com.weappsinc.screenpet.feature.settings.data.DataStoreAppSettingsRepository
+import com.weappsinc.screenpet.feature.settings.domain.repository.AppRatingRepository
 import com.weappsinc.screenpet.feature.settings.domain.repository.AppSettingsRepository
 import dagger.Binds
 import dagger.Module
@@ -15,4 +17,8 @@ abstract class SettingsBindModule {
     @Binds
     @Singleton
     abstract fun bindAppSettings(impl: DataStoreAppSettingsRepository): AppSettingsRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindAppRating(impl: DataStoreAppRatingRepository): AppRatingRepository
 }
